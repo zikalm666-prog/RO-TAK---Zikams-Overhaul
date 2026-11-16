@@ -641,6 +641,117 @@ try { if (document.documentElement.className === 'web' && !navigator.standalone 
   #llg .lg-panel * { user-select: text; -webkit-user-select: text; }
   @media (max-width: 700px) { #llg .lg-panel { padding: 24px 20px 28px; } #landing .legal { left: 24px; } #landing .updated { right: 24px; } }
   @media (prefers-reduced-motion: reduce) { #landing .track, #landing .avatar, #landing .poppy, #landing .hero h1, #landing .enter, #landing .updated, #landing .chat { animation: none; } }
+/* === RO-TAK ENHANCED: ATAK REAL UI OVERRIDE === */
+html.web #bar {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 36px !important;
+  border-radius: 0 !important;
+  background: rgba(10, 12, 10, 0.96) !important;
+  border-bottom: 1px solid #2b332b !important;
+  font-family: monospace !important;
+}
+
+/* Barra de herramientas estilo ATAK Action Bar */
+html.web #toolbar {
+  top: 36px !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(12, 14, 12, 0.95) !important;
+  border-left: 1px solid #2b332b !important;
+  border-bottom: 1px solid #2b332b !important;
+  padding: 2px !important;
+  gap: 2px !important;
+}
+
+#toolbar button, #drawbar button, #selbar button, #navbtns button, #numTog, #wpBtn, #tmBtn, #lyBtn {
+  border-radius: 2px !important;
+  background: #181c18 !important;
+  border: 1px solid #2d362d !important;
+  color: #e2e8e2 !important;
+}
+
+#toolbar button.on, #drawbar button.on, #selbar button.on, #wpBtn.on, #tmBtn.on, #lyBtn.on {
+  background: #00ff41 !important;
+  color: #050805 !important;
+  border-color: #00ff41 !important;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4) !important;
+}
+
+/* Submenús anclados arriba bajo la barra */
+html.web #palette, html.web #drawbar, html.web #selbar, html.web #numbar, html.web #gridbar {
+  top: 78px !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: 6px !important;
+  margin: 0 !important;
+  border-radius: 2px !important;
+  background: rgba(12, 14, 12, 0.96) !important;
+  border: 1px solid #2b332b !important;
+}
+
+/* Caja de Coordenadas estilo ATAK (Esquina inferior derecha) */
+html.web #coord {
+  top: auto !important;
+  left: auto !important;
+  right: 8px !important;
+  bottom: 8px !important;
+  display: block !important;
+  border-radius: 2px !important;
+  background: rgba(8, 10, 8, 0.92) !important;
+  border: 1px solid #2f3b2f !important;
+  color: #00ff41 !important;
+  font-family: monospace !important;
+  font-size: 12px !important;
+  padding: 6px 10px !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* Brújula y botones de navegación a la izquierda estilo ATAK */
+html.web #nav {
+  top: 44px !important;
+  left: 10px !important;
+  right: auto !important;
+  align-items: flex-start !important;
+}
+
+#hdg {
+  border-radius: 2px !important;
+  background: rgba(8, 10, 8, 0.92) !important;
+  border: 1px solid #2f3b2f !important;
+  color: #00ff41 !important;
+  font-family: monospace !important;
+}
+
+/* Paneles tácticos cuadrados y oscuros */
+#menu, #sympanel, #side, #nl {
+  border-radius: 2px !important;
+  background: rgba(12, 14, 12, 0.97) !important;
+  border: 1px solid #2b332b !important;
+  font-family: monospace !important;
+}
+/* Reubicación y estilo táctico del reloj (#clock) */
+html.web #clock {
+  top: 156px !important;
+  left: 10px !important;
+  border-radius: 2px !important;
+  background: rgba(8, 10, 8, 0.92) !important;
+  border: 1px solid #ef4444 !important;
+  color: #ef4444 !important;
+  font-family: monospace !important;
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  letter-spacing: 0.5px !important;
+}
+
+html.web #clock::before {
+  background: #ef4444 !important;
+  border: 0 !important;
+}
 </style>
 </head>
 <body>
@@ -661,7 +772,8 @@ try { if (document.documentElement.className === 'web' && !navigator.standalone 
         <p id="lchatText"></p>
       </div>
     </div>
-    <h1>Banana's <span style="white-space:nowrap">RO-TAK</span></h1>
+    <h1>Banana's <span style="white-space:nowrap">RO-TAK</span> <span style="display:block; font-size:0.4em; font-family:monospace; color:#00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.4); letter-spacing:4px; margin-top:6px;">[ ENHANCED ]</span></h1>
+
     <div class="enter-row">
       <button id="lenter" class="enter" type="button">Enter <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       <div class="dl"><button id="ldl" class="enter" type="button" aria-haspopup="menu" aria-expanded="false">Download RO-TAK <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button><div id="ldlm" class="dl-menu" role="menu" hidden><a role="menuitem" href="/api/download?f=win">Windows<img src="/images/os-windows.png" alt=""></a><a role="menuitem" href="/api/download?f=mac-intel">Mac (Intel)<img class="wide" src="/images/os-intel.png" alt=""></a><a role="menuitem" href="/api/download?f=mac-arm">Mac (Apple)<img src="/images/os-apple.png" alt=""></a></div></div>
@@ -4151,6 +4263,873 @@ try {
   else if (r && r.code) joinRoom(r.code, $('nameIn').value);
 } catch (e) {}
 try { if (!document.documentElement.classList.contains('land') && !localStorage.getItem('atak-tour')) setTimeout(() => tourShow(0), 700); } catch (e) {}
+</script>
+<!-- === BANANA'S RO-TAK ENHANCED: ATAK REAL UI v6 === -->
+<style>
+  html.web #bar {
+    top: 0 !important; left: 0 !important; right: 0 !important; height: 42px !important;
+    border-radius: 0 !important; background: #090b09 !important;
+    border-bottom: 1px solid #2b382b !important; font-family: monospace !important;
+    padding-right: 545px !important;
+  }
+  html.web #bar #title { color: #00ff41 !important; letter-spacing: 1px !important; }
+  html.web #bar > svg { display: none !important; }
+  html.web #avs { position: fixed !important; right: 12px !important; top: 10px !important; z-index: 6 !important; }
+
+  html.web #toolbar {
+    top: 0 !important; bottom: auto !important; left: auto !important; right: 68px !important;
+    height: 42px !important; margin: 0 !important; border-radius: 0 !important;
+    background: transparent !important; border: 0 !important; padding: 0 4px !important; gap: 3px !important; z-index: 5 !important;
+  }
+  #toolbar button, #drawbar button, #selbar button, #navbtns button, #numTog, #wpBtn, #tmBtn, #lyBtn {
+    border-radius: 2px !important; background: #141814 !important;
+    border: 1px solid #2c382c !important; color: #d8e2d8 !important;
+  }
+  #toolbar button:hover, #drawbar button:hover, #selbar button:hover {
+    border-color: #00ff41 !important; color: #fff !important;
+  }
+  #toolbar button.on, #drawbar button.on, #selbar button.on, #wpBtn.on, #tmBtn.on, #lyBtn.on {
+    background: #ff9900 !important; color: #050805 !important; border-color: #ffcc66 !important;
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.45) !important;
+  }
+
+  html.web #palette, html.web #drawbar, html.web #selbar, html.web #numbar, html.web #gridbar {
+    top: 46px !important; bottom: auto !important; left: auto !important; right: 10px !important;
+    margin: 0 !important; border-radius: 2px !important;
+    background: rgba(9, 11, 9, 0.96) !important; border: 1px solid #2b382b !important;
+  }
+
+  html.web #nav { top: 50px !important; left: 10px !important; right: auto !important; align-items: flex-start !important; }
+  html.web #mm { top: 50px !important; left: 130px !important; border: 1px solid #00ff41 !important; }
+  html.web #clock {
+    top: 166px !important; left: 10px !important; border-radius: 2px !important;
+    background: rgba(8, 10, 8, 0.92) !important; border: 1px solid #4a1c1c !important;
+    color: #ff4d4d !important; font-family: monospace !important; font-size: 11px !important; padding: 3px 8px !important;
+  }
+
+  #atak-telemetry {
+    position: fixed; right: 8px; bottom: 8px; z-index: 15;
+    background: rgba(8, 10, 8, 0.92); border: 1px solid #2f3e2f; border-radius: 2px;
+    padding: 6px 10px; font: 600 11px/1.45 monospace; color: #00ff41;
+    pointer-events: none; min-width: 235px; text-align: left;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  }
+  #atak-telemetry .tk-sub { color: #a3b8a3; font-size: 10px; }
+  html.web #coord { display: none !important; }
+
+  #atak-scale {
+    position: fixed; left: 12px; bottom: 12px; z-index: 15;
+    background: rgba(8, 10, 8, 0.88); border: 1px solid #2f3e2f; border-radius: 2px;
+    padding: 5px 8px; font: 700 11px monospace; color: #00ff41;
+    pointer-events: none; user-select: none;
+  }
+  #atak-scale-bar {
+    width: 90px; height: 6px; margin-top: 3px;
+    border-left: 2px solid #00ff41; border-right: 2px solid #00ff41; border-bottom: 2px solid #00ff41;
+  }
+
+  #stage::after {
+    content: ""; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px;
+    transform: translate(-50%, -50%); pointer-events: none; z-index: 2;
+    background:
+      linear-gradient(to right, transparent 46%, rgba(0, 255, 65, 0.6) 46%, rgba(0, 255, 65, 0.6) 54%, transparent 54%),
+      linear-gradient(to bottom, transparent 46%, rgba(0, 255, 65, 0.6) 46%, rgba(0, 255, 65, 0.6) 54%, transparent 54%);
+  }
+
+  #atak-radial {
+    position: fixed; width: 190px; height: 190px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(8,10,8,0.96) 26%, rgba(16,22,16,0.92) 72%);
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 24px rgba(0, 255, 65, 0.35), inset 0 0 14px rgba(0,0,0,0.85);
+    display: none; z-index: 9999; transform: translate(-50%, -50%);
+  }
+  #atak-radial.open { display: block; }
+  #atak-radial::after {
+    content: "ATAK"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 46px; height: 46px; border-radius: 50%; background: #090b09;
+    border: 1.5px solid #ff9900; color: #ff9900; font: 700 10px monospace;
+    display: flex; align-items: center; justify-content: center; letter-spacing: 1px;
+  }
+  .atak-petal {
+    position: absolute; width: 38px; height: 38px; border-radius: 50%;
+    background: #141814; border: 1px solid #3a4d3a; color: #e2ece2;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transform: translate(-50%, -50%);
+  }
+  .atak-petal:hover {
+    background: #ff9900; color: #050805; border-color: #fff;
+    transform: translate(-50%, -50%) scale(1.16);
+  }
+  .atak-petal svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* 8. Pop-up de las 3 líneas (#menu) COMPACTO estilo ATAK */
+  html.web #menu {
+    top: 46px !important; bottom: auto !important; left: auto !important; right: 8px !important;
+    margin: 0 !important; width: 300px !important; max-width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 135px) !important; padding: 10px !important; gap: 8px !important;
+    border-radius: 2px !important; background: rgba(9, 11, 9, 0.96) !important;
+    border: 1px solid #2b382b !important; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.85) !important;
+    font-family: monospace !important; font-size: 11px !important; color: #d8e2d8 !important; z-index: 25 !important;
+  }
+  #menu .sh {
+    color: #00ff41 !important; font-size: 10px !important; letter-spacing: 0.8px !important;
+    border-bottom: 1px solid #1f291f !important; padding-bottom: 3px !important;
+  }
+  #settings, #gridsec, #legend { border-top: 1px solid #2b382b !important; padding-top: 8px !important; }
+  #settings { grid-template-columns: 1fr 75px 44px !important; gap: 6px !important; }
+  #binds { grid-template-columns: 1fr !important; grid-auto-flow: row !important; gap: 4px !important; }
+  #legend { transform: scale(0.82); transform-origin: top left; margin-bottom: -80px !important; }
+  #menu input[type="text"], #menu input[type="number"] {
+    height: 24px !important; border-radius: 2px !important; background: #141814 !important;
+    border: 1px solid #2c382c !important; color: #00ff41 !important; font-family: monospace !important; font-size: 11px !important;
+  }
+  #menu button, #menu .mbtn {
+    height: 24px !important; border-radius: 2px !important; background: #141814 !important;
+    border: 1px solid #2c382c !important; color: #e2ece2 !important; font-family: monospace !important;
+    font-size: 10.5px !important; text-transform: uppercase !important;
+  }
+  #menu button:hover, #menu .mbtn:hover {
+    background: #ff9900 !important; color: #050805 !important; border-color: #ffcc66 !important;
+  }
+  #menu .mbtn.alt, #gridsec button.alt {
+    background: #0d100d !important; border-color: #222b22 !important; color: #9ab09a !important;
+  }
+  #menu input[type="range"], #menu input[type="checkbox"] { accent-color: #00ff41 !important; }
+  #binds b {
+    border-radius: 2px !important; background: #141814 !important;
+    border: 1px solid #2c382c !important; color: #00ff41 !important; font-family: monospace !important;
+  }
+
+  /* 9. Drawer de Maps / Waypoints / Layers compacto */
+  #sympanel, #side, #nl {
+    border-radius: 2px !important; background: rgba(9, 11, 9, 0.96) !important;
+    border: 1px solid #2b382b !important; font-family: monospace !important;
+  }
+  html.web #side, html.web #sympanel {
+    left: auto !important; right: 8px !important; top: 46px !important; bottom: auto !important;
+    width: 300px !important; max-height: calc(100vh - 135px) !important; margin: 0 !important;
+  }
+  #side button, #side .sb, #sympanel button {
+    border-radius: 2px !important; background: #141814 !important;
+    border: 1px solid #2c382c !important; color: #e2ece2 !important; font-family: monospace !important;
+  }
+  #sideTabs button.on { background: #ff9900 !important; color: #050805 !important; }
+    /* Barra táctil ATAK para ingresar metros */
+  #atak-m-prompt {
+    position: fixed; top: 46px; left: 50%; transform: translateX(-50%); z-index: 9999;
+    display: none; align-items: center; gap: 6px; padding: 6px 10px;
+    background: rgba(9, 11, 9, 0.97); border: 1px solid #00ff41; border-radius: 2px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.85); font: 600 11px monospace; color: #e2ece2;
+  }
+  #atak-m-prompt.open { display: flex; }
+  #atak-m-in {
+    width: 85px; height: 24px; background: #141814; border: 1px solid #2c382c; border-radius: 2px;
+    color: #00ff41; font: 700 12px monospace; text-align: center; outline: none;
+  }
+  #atak-m-in:focus { border-color: #ff9900; }
+  #atak-m-prompt button {
+    height: 24px; padding: 0 10px; border-radius: 2px; border: 1px solid #2c382c;
+    background: #141814; color: #e2ece2; font: 700 11px monospace; cursor: pointer;
+  }
+  #atak-m-prompt button#atak-m-ok { background: #ff9900; color: #050805; border-color: #ffcc66; }
+  /* Oculta el tutorial viejo original */
+  #tut { display: none !important; }
+
+  /* Nuevo Tutorial Táctico ATAK (#atak-tut) */
+  #atak-tut {
+    position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 380px; max-width: calc(100vw - 32px); z-index: 9998;
+    background: rgba(9, 11, 9, 0.97); border: 1px solid #00ff41; border-top: 2px solid #00ff41;
+    border-radius: 2px; padding: 18px 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.92), 0 0 20px rgba(0, 255, 65, 0.15);
+    font-family: monospace; color: #d8e2d8; display: none;
+  }
+  #atak-tut.show { display: block; }
+  #atak-tut h3 {
+    margin: 0 0 8px 0; color: #00ff41; font-size: 13px;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  #atak-tut p {
+    margin: 0 0 16px 0; color: #b8c7b8; font-size: 11.5px; line-height: 1.5;
+  }
+  #atak-tut-foot {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  #atak-tut-dots { display: flex; gap: 6px; }
+  #atak-tut-dots span {
+    width: 14px; height: 4px; background: #243024; border-radius: 1px;
+  }
+  #atak-tut-dots span.on {
+    background: #00ff41; box-shadow: 0 0 6px rgba(0, 255, 65, 0.6);
+  }
+  #atak-tut-btns { display: flex; gap: 8px; }
+  #atak-tut button {
+    height: 28px; padding: 0 14px; border-radius: 2px; cursor: pointer;
+    background: #141814; border: 1px solid #2c382c; color: #cbd5e1;
+    font: 700 11px monospace; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  #atak-tut button:hover { border-color: #00ff41; color: #fff; }
+  #atak-tut button#atak-tut-next {
+    background: #ff9900; color: #050805; border-color: #ffcc66;
+  }
+
+      /* === PORTADA MINIMALISTA TOPOGRÁFICA ATAK (#landing) v6 === */
+  /* 1. Fondo topográfico gris visible y nítido */
+  #landing {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: #0b0d10 !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='500' height='500' viewBox='0 0 500 500'%3E%3Cg fill='none' stroke='%23cbd5e1' stroke-opacity='0.24' stroke-width='1.5'%3E%3Cpath d='M-40 60 Q 100 10 220 90 T 540 50'/%3E%3Cpath d='M-40 120 Q 120 60 240 145 T 540 110'/%3E%3Cpath d='M-40 185 Q 140 115 260 205 T 540 175'/%3E%3Cpath d='M-40 255 Q 130 185 280 265 T 540 240'/%3E%3Cpath d='M-40 325 Q 110 265 270 340 T 540 310'/%3E%3Cpath d='M-40 395 Q 130 345 250 410 T 540 380'/%3E%3Cpath d='M-40 465 Q 150 415 290 480 T 540 450'/%3E%3Cellipse cx='360' cy='175' rx='85' ry='48' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='360' cy='175' rx='48' ry='26' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='360' cy='175' rx='18' ry='9' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='135' cy='355' rx='95' ry='52' transform='rotate(14 135 355)'/%3E%3Cellipse cx='135' cy='355' rx='55' ry='28' transform='rotate(14 135 355)'/%3E%3Cellipse cx='135' cy='355' rx='22' ry='11' transform='rotate(14 135 355)'/%3E%3C/g%3E%3C/svg%3E") !important;
+    background-repeat: repeat !important;
+    background-size: 500px 500px !important;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+    overflow: hidden !important;
+  }
+
+  #landing::before,
+  #landing::after {
+    display: none !important;
+    content: none !important;
+  }
+
+#landing > *:not(.hero):not(nav):not(footer):not(.foot):not(.updated):not(#atak-topo-bg) {
+
+
+    display: none !important;
+  }
+  #landing .hero img:not(.avatar),
+  #landing .hero .poppy,
+  #landing .hero [class*="flower"],
+  #landing .hero [class*="badge"],
+  #landing .chat,
+  #landing [class*="chat"],
+  #landing [class*="bubble"] {
+    display: none !important;
+  }
+
+  /* Tarjeta minimalista estilo ATAK HUD */
+  #landing .hero {
+    position: relative !important;
+    top: auto !important; left: auto !important; transform: none !important;
+    height: auto !important; min-height: 0 !important;
+    width: 630px !important; max-width: calc(100vw - 32px) !important;
+    background: rgba(11, 13, 15, 0.88) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 3px !important;
+    padding: 36px 42px !important;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.9) !important;
+    margin: 0 !important;
+    z-index: 10 !important;
+  }
+
+  /* Encabezado superior con propósito real del software */
+  #landing .hero::before {
+    content: "RO-TAK [ENHANCED]  //  SQUAD TACTICAL MAPPING & PLANNING  ·  v2.4.1";
+    display: block;
+    font-family: monospace !important;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 1.3px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+    /* Lista de herramientas reales de planificación en el mapa */
+  #landing .hero::after {
+    content: "TOOLS:  NATO SYMBOLS  ·  MGRS GRID  ·  RANGE & BEARING  ·  WAYPOINTS & ROUTES";
+    display: block;
+    font-family: monospace !important;
+    font-size: 10px;
+    font-weight: 600;
+    color: #7c8b99;
+    letter-spacing: 1px;
+    margin-top: 26px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  #landing .avatar {
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+    margin-bottom: 18px !important;
+  }
+
+  #landing .hero h1 {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+    font-size: 40px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    letter-spacing: -0.8px !important;
+    color: #f8fafc !important;
+    margin: 0 0 26px 0 !important;
+    text-transform: uppercase !important;
+  }
+
+  /* Todos los botones en gris oscuro minimalista */
+  #landing .hero a,
+  #landing .hero button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 40px !important;
+    padding: 0 18px !important;
+    margin: 4px 8px 4px 0 !important;
+    border-radius: 2px !important;
+    font-family: monospace !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.1px !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    color: #cbd5e1 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  #landing .hero a:hover,
+  #landing .hero button:hover {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.09) !important;
+    color: #ffffff !important;
+  }
+
+  /* Solo el botón ENTER en ámbar táctico */
+  #landing .hero .enter,
+  #landing .hero a.enter,
+  #landing .hero button.enter {
+    background: #ff9900 !important;
+    color: #090a0b !important;
+    border-color: #ff9900 !important;
+    padding: 0 26px !important;
+    box-shadow: 0 0 20px rgba(255, 153, 0, 0.28) !important;
+  }
+
+  #landing .hero .enter:hover,
+  #landing .hero a.enter:hover,
+  #landing .hero button.enter:hover {
+    background: #ffad33 !important;
+    border-color: #ffad33 !important;
+    box-shadow: 0 0 28px rgba(255, 153, 0, 0.5) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Pie de página minimalista: solo Privacy policy y Terms of service */
+  #landing nav,
+  #landing footer,
+  #landing .foot {
+    position: fixed !important;
+    left: 22px !important;
+    bottom: 16px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: monospace !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    background: transparent !important;
+    border: 0 !important;
+    z-index: 12 !important;
+  }
+  #landing nav a,
+  #landing footer a,
+  #landing .foot a {
+    background: transparent !important;
+    border: 0 !important;
+    color: #64748b !important;
+    padding: 2px 12px 2px 0 !important;
+  }
+  #landing nav a:hover,
+  #landing footer a:hover,
+  #landing .foot a:hover {
+    color: #e2e8f0 !important;
+  }
+  /* Oculta Introduction y My Projects */
+  #landing nav a:nth-child(n+3),
+  #landing footer a:nth-child(n+3),
+  #landing .foot a:nth-child(n+3) {
+    display: none !important;
+  }
+  #landing .updated {
+    position: fixed !important;
+    right: 22px !important;
+    bottom: 16px !important;
+    font-family: monospace !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    z-index: 12 !important;
+  }
+  /* === TUTORIAL TÁCTICO ESTILO ATAK (#tut) === */
+  #tut {
+    border-radius: 2px !important;
+    background: rgba(9, 11, 9, 0.97) !important;
+    border: 1px solid #00ff41 !important;
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.9) !important;
+    font-family: monospace !important;
+    color: #d8e2d8 !important;
+  }
+  #tut h3 {
+    color: #00ff41 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 13px !important;
+  }
+  #tut p {
+    color: #b8c7b8 !important;
+    font-size: 11.5px !important;
+    line-height: 1.45 !important;
+  }
+  #tutdots span {
+    border-radius: 1px !important;
+    background: #2c382c !important;
+  }
+  #tutdots span.on {
+    background: #00ff41 !important;
+    box-shadow: 0 0 6px rgba(0, 255, 65, 0.6) !important;
+  }
+  #tut button {
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #e2ece2 !important;
+    font-family: monospace !important;
+    text-transform: uppercase !important;
+  }
+  #tut button#tutnext {
+    background: #ff9900 !important;
+    color: #050805 !important;
+    border-color: #ffcc66 !important;
+  }
+  #tut button:hover {
+    border-color: #00ff41 !important;
+  }
+
+</style>
+<div id="atak-telemetry">
+  <div id="tk-call">ID: OPERATOR  [LOCAL]</div>
+  <div id="tk-grid">MGRS: NO GRID LOCK</div>
+  <div id="tk-hdg" class="tk-sub">HDG: 000°T   RNG: ---m</div>
+</div>
+
+<div id="atak-scale">
+  <span id="atak-scale-txt">SCALE: UNCALIBRATED</span>
+  <div id="atak-scale-bar"></div>
+</div>
+
+<div id="atak-radial"></div>
+<div id="atak-m-prompt">
+  <span>DIST (METERS):</span>
+  <input id="atak-m-in" type="number" value="1000" min="1">
+  <button id="atak-m-ok" type="button">OK</button>
+  <button id="atak-m-x" type="button">✕</button>
+</div>
+<script>
+(function() {
+  const stage = document.getElementById('stage');
+  const radial = document.getElementById('atak-radial');
+  const tkCall = document.getElementById('tk-call');
+  const tkGrid = document.getElementById('tk-grid');
+  const tkHdg  = document.getElementById('tk-hdg');
+  const scaleTxt = document.getElementById('atak-scale-txt');
+  const scaleBar = document.getElementById('atak-scale-bar');
+
+  let metersPerPx = parseFloat(localStorage.getItem('atak-mpp') || '0') || 0;
+   let scaleCalib = null;
+
+  (function renderCalibLoop() {
+    if (scaleCalib && typeof ctx !== 'undefined' && typeof v !== 'undefined' && typeof c !== 'undefined') {
+      const k = (typeof dpr !== 'undefined' ? dpr : 1) * v.s;
+      const co = Math.cos(v.r), si_ = Math.sin(v.r);
+      ctx.save();
+      ctx.setTransform(k * co, k * si_, -k * si_, k * co, (typeof dpr !== 'undefined' ? dpr : 1) * v.x, (typeof dpr !== 'undefined' ? dpr : 1) * v.y);
+
+      const drawTarget = function(wx, wy, col) {
+        const r = 12 / v.s;
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 2 / v.s;
+        ctx.beginPath();
+        ctx.moveTo(wx - r, wy); ctx.lineTo(wx + r, wy);
+        ctx.moveTo(wx, wy - r); ctx.lineTo(wx, wy + r);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(wx, wy, r * 0.6, 0, Math.PI * 2);
+        ctx.stroke();
+      };
+
+      if (scaleCalib.step >= 2) drawTarget(scaleCalib.x1, scaleCalib.y1, '#3b82f6');
+      if (scaleCalib.step === 3) {
+        drawTarget(scaleCalib.x2, scaleCalib.y2, '#facc15');
+        ctx.strokeStyle = '#facc15';
+        ctx.lineWidth = 1.5 / v.s;
+        ctx.setLineDash(Array.of(5 / v.s, 4 / v.s));
+        ctx.beginPath();
+        ctx.moveTo(scaleCalib.x1, scaleCalib.y1);
+        ctx.lineTo(scaleCalib.x2, scaleCalib.y2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    requestAnimationFrame(renderCalibLoop);
+  })();
+
+  function updateScaleDisplay() {
+    if (typeof v === 'undefined' || !scaleTxt) return;
+    if (scaleCalib) return;
+    if (!metersPerPx) {
+      scaleTxt.textContent = 'SCALE: UNCALIBRATED';
+      scaleBar.style.width = '90px';
+      return;
+    }
+    const targetMeters = (90 / v.s) * metersPerPx;
+    const steps = Array.of(10, 25, 50, 100, 250, 500, 1000, 2000, 5000);
+    let niceMeters = 100;
+    let bestDiff = Infinity;
+    steps.forEach(function(st) {
+      const diff = Math.abs(st - targetMeters);
+      if (diff < bestDiff) { bestDiff = diff; niceMeters = st; }
+    });
+    const barPx = Math.max(30, Math.min(180, (niceMeters / metersPerPx) * v.s));
+    scaleBar.style.width = Math.round(barPx) + 'px';
+    scaleTxt.textContent = niceMeters >= 1000 ? (niceMeters / 1000) + ' km' : niceMeters + ' m';
+  }
+
+  function startMeterCalib() {
+    if (typeof img === 'undefined' || !img) {
+      if (typeof toast === 'function') toast('Open a map first');
+      return;
+    }
+    document.getElementById('menu').classList.remove('open');
+    scaleCalib = { step: 1, x1: 0, y1: 0, x2: 0, y2: 0 };
+    scaleTxt.textContent = 'TAP POINT 1...';
+    if (typeof toast === 'function') toast('Point 1: click a spot on the map');
+  }
+
+  const gridSec = document.getElementById('gridsec');
+  if (gridSec && !document.getElementById('atak-cal-m-btn')) {
+    const btnCalM = document.createElement('button');
+    btnCalM.id = 'atak-cal-m-btn';
+    btnCalM.textContent = 'Calibrate meters (2 pts)';
+    btnCalM.onclick = startMeterCalib;
+
+    const btnClrM = document.createElement('button');
+    btnClrM.className = 'alt';
+    btnClrM.textContent = 'Clear meters';
+    btnClrM.onclick = function() {
+      metersPerPx = 0;
+      localStorage.removeItem('atak-mpp');
+      scaleCalib = null;
+      updateScaleDisplay();
+      if (typeof toast === 'function') toast('Meter scale cleared');
+    };
+
+    const firstBtn = gridSec.querySelector('button');
+    if (firstBtn && firstBtn.nextElementSibling) {
+      firstBtn.nextElementSibling.after(btnCalM, btnClrM);
+    } else {
+      gridSec.append(btnCalM, btnClrM);
+    }
+  }
+
+  stage.addEventListener('pointerdown', function(e) {
+    if (!scaleCalib || scaleCalib.step === 3 || e.button !== 0) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    const pt = world(e);
+    const px = pt.shift();
+    const py = pt.shift();
+    if (scaleCalib.step === 1) {
+      scaleCalib.x1 = px;
+      scaleCalib.y1 = py;
+      scaleCalib.step = 2;
+      scaleTxt.textContent = 'TAP POINT 2...';
+      if (typeof toast === 'function') toast('Point 2: click a second spot on the map');
+      if (typeof draw === 'function') draw();
+    } else if (scaleCalib.step === 2) {
+      const distPx = Math.hypot(px - scaleCalib.x1, py - scaleCalib.y1);
+      if (distPx < 5) {
+        scaleCalib = null;
+        updateScaleDisplay();
+        if (typeof draw === 'function') draw();
+        if (typeof toast === 'function') toast('Points are too close, try again');
+        return;
+      }
+      scaleCalib.x2 = px;
+      scaleCalib.y2 = py;
+      scaleCalib.step = 3;
+      scaleTxt.textContent = 'ENTER METERS...';
+      if (typeof draw === 'function') draw();
+
+      const box = document.getElementById('atak-m-prompt');
+      const inp = document.getElementById('atak-m-in');
+      box.classList.add('open');
+      inp.value = '1000';
+      setTimeout(function() { inp.focus(); inp.select(); }, 10);
+
+      const closeCalib = function() {
+        box.classList.remove('open');
+        scaleCalib = null;
+        if (typeof draw === 'function') draw();
+        updateScaleDisplay();
+      };
+
+      const finish = function() {
+        const m = parseFloat(inp.value);
+        if (m > 0) {
+          metersPerPx = m / distPx;
+          localStorage.setItem('atak-mpp', String(metersPerPx));
+          if (typeof toast === 'function') toast('Scale calibrated: ' + m + 'm');
+        }
+        closeCalib();
+      };
+
+      document.getElementById('atak-m-ok').onclick = finish;
+      document.getElementById('atak-m-x').onclick = closeCalib;
+      inp.onkeydown = function(ev) {
+        ev.stopPropagation();
+        if (ev.key === 'Enter') finish();
+        if (ev.key === 'Escape') closeCalib();
+      };
+    }
+  }, true);
+
+  stage.addEventListener('pointermove', function(e) {
+    const nameEl = document.getElementById('nameIn');
+    const nick = (nameEl ? nameEl.value : 'OPERATOR').toUpperCase();
+    const rm = (typeof room !== 'undefined' && room) ? room.toUpperCase() : 'LOCAL';
+    tkCall.textContent = 'ID: ' + nick + '  [' + rm + ']';
+
+    const curW = world(e);
+    const cx = curW.shift();
+    const cy = curW.shift();
+
+    if (typeof grid !== 'undefined' && grid && typeof img !== 'undefined' && img) {
+      const g = toGrid(Array.of(cx, cy));
+      tkGrid.textContent = 'MGRS: ' + fmt8(g) + ' (' + fmt6(g) + ')';
+    } else {
+      tkGrid.textContent = 'MGRS: NO GRID LOCK';
+    }
+
+    if (typeof v !== 'undefined' && typeof toWorld === 'function') {
+      const r = c.getBoundingClientRect();
+      const centerW = toWorld(r.width / 2, r.height / 2);
+      const mx = centerW.shift();
+      const my = centerW.shift();
+      const dx = cx - mx;
+      const dy = cy - my;
+      const hdg = (((Math.round(Math.atan2(dx, -dy) * 180 / Math.PI) % 360) + 360) % 360);
+      let rngTxt = '---m';
+      if (metersPerPx > 0) {
+        const distM = Math.round(Math.hypot(dx, dy) * metersPerPx);
+        rngTxt = distM >= 1000 ? (distM / 1000).toFixed(2) + 'km' : distM + 'm';
+      }
+      tkHdg.textContent = 'HDG: ' + String(hdg).padStart(3, '0') + '°T   RNG: ' + rngTxt;
+      updateScaleDisplay();
+    }
+  });
+  stage.addEventListener('wheel', function() { setTimeout(updateScaleDisplay, 20); }, { passive: true });
+  setTimeout(updateScaleDisplay, 500);
+
+  const RADIAL_IDS = Array.of('b-sym', 'b-wp', 'b-meas', 'b-ping', 'b-draw', 'b-text', 'b-eraser', 'b-pan');
+  let rDown = null;
+
+  stage.addEventListener('pointerdown', function(e) {
+    if (e.button === 2) rDown = { x: e.clientX, y: e.clientY };
+  });
+
+  stage.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    if (!rDown) return;
+    const moved = Math.hypot(e.clientX - rDown.x, e.clientY - rDown.y);
+    rDown = null;
+    if (moved > 6) return;
+
+    radial.innerHTML = '';
+    const btns = RADIAL_IDS.map(function(id) { return document.getElementById(id); }).filter(Boolean);
+    const radius = 68;
+
+    btns.forEach(function(origBtn, i) {
+      const angle = (i / btns.length) * Math.PI * 2 - Math.PI / 2;
+      const x = 95 + radius * Math.cos(angle);
+      const y = 95 + radius * Math.sin(angle);
+
+      const petal = document.createElement('button');
+      petal.className = 'atak-petal';
+      petal.style.left = x + 'px';
+      petal.style.top = y + 'px';
+      petal.title = origBtn.title || '';
+      petal.innerHTML = origBtn.innerHTML;
+
+      petal.onclick = function() {
+        origBtn.click();
+        radial.classList.remove('open');
+      };
+      radial.appendChild(petal);
+    });
+
+    radial.style.left = e.clientX + 'px';
+    radial.style.top = e.clientY + 'px';
+    radial.classList.add('open');
+  });
+
+  document.addEventListener('pointerdown', function(e) {
+    if (e.button === 0 && !radial.contains(e.target)) radial.classList.remove('open');
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { radial.classList.remove('open'); scaleCalib = null; updateScaleDisplay(); }
+  });
+      document.querySelectorAll('#landing *').forEach(function(el) {
+    if (el.children.length === 0 && el.textContent && el.textContent.includes('Updated')) {
+      el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;">ZIKAM\'S OVERHAUL</span> <span style="color:#475569;margin:0 6px;">|</span> Updated on November 16th 2026';
+    }
+  });
+
+
+    // --- PORTADA TÁCTICA OVERHAUL & FONDO URBANO ---
+  const landingEl = document.getElementById('landing');
+  if (landingEl) {
+    // 1. Fondo apuntando a ./images/bg-tactical.png + viñeta oscura
+    let bgDiv = document.getElementById('atak-topo-bg');
+    if (!bgDiv) {
+      bgDiv = document.createElement('div');
+      bgDiv.id = 'atak-topo-bg';
+      landingEl.prepend(bgDiv);
+    }
+    bgDiv.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;background:#07090b;overflow:hidden;';
+    bgDiv.innerHTML = `
+      <div style="position:absolute;inset:0;background:url('./images/bg-tactical.png') center/cover no-repeat;opacity:0.80;filter:contrast(1.1) saturate(1.15);"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(circle at 35% 35%, rgba(7,9,11,0.25) 0%, rgba(5,7,9,0.86) 88%);"></div>
+    `;
+
+    // 2. Título en una sola línea + Emblema horizontal limpio
+    const heroH1 = landingEl.querySelector('.hero h1');
+    if (heroH1) {
+      heroH1.innerHTML = `
+        <div style="font-size:38px;font-weight:900;letter-spacing:-0.5px;color:#f8fafc;line-height:1.05;white-space:nowrap;">BANANA'S RO-TAK</div>
+        <div style="display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:6px 14px;background:linear-gradient(90deg, rgba(255,153,0,0.22) 0%, rgba(0,255,65,0.14) 100%);border:1px solid rgba(255,153,0,0.6);border-left:3px solid #ff9900;border-radius:2px;font-family:monospace;font-size:11.5px;font-weight:800;letter-spacing:1.4px;color:#ffb84d;white-space:nowrap;">
+          <span> RO-TAK TACTICAL OVERHAUL</span>
+          <span style="color:#00ff41;font-size:10.5px;border-left:1px solid rgba(255,255,255,0.22);padding-left:10px;">FULL UI OVERHAUL + NEW MECHANICS</span>
+        </div>
+        <div style="margin-top:14px;font-family:monospace;font-size:11px;font-weight:500;letter-spacing:0.3px;color:#94a3b8;line-height:1.5;text-transform:none;">
+          Complete C2 interface featuring a right-click Radial Menu and real-time MGRS / HDG / RNG telemetry.
+        </div>
+      `;
+    }
+
+    // 3. Oculta "Introduction" y "My Projects" y deja solo ENTER resaltado
+    landingEl.querySelectorAll('a, button, span').forEach(function(el) {
+      const txt = (el.textContent || '').trim().toLowerCase();
+      if (txt === 'introduction' || txt === 'my projects') {
+        el.style.setProperty('display', 'none', 'important');
+      }
+      if (txt.includes('download') || txt.includes('github')) {
+        el.style.setProperty('background', 'rgba(15, 19, 24, 0.85)', 'important');
+        el.style.setProperty('color', '#cbd5e1', 'important');
+        el.style.setProperty('border-color', 'rgba(255, 255, 255, 0.18)', 'important');
+        el.style.setProperty('box-shadow', 'none', 'important');
+      }
+    });
+  }
+      // --- TUTORIAL TÁCTICO INDEPENDIENTE (#atak-tut) ---
+  if (!document.getElementById('atak-tut')) {
+    const aTut = document.createElement('div');
+    aTut.id = 'atak-tut';
+    aTut.innerHTML = `
+      <h3 id="atak-tut-h"></h3>
+      <p id="atak-tut-p"></p>
+      <div id="atak-tut-foot">
+        <div id="atak-tut-dots"></div>
+        <div id="atak-tut-btns">
+          <button id="atak-tut-skip" type="button">SKIP</button>
+          <button id="atak-tut-next" type="button">NEXT</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(aTut);
+
+    const atakSteps = [
+      {
+        t: '01 // TOP ACTION BAR',
+        b: 'Select tactical tools on the top right Action Bar, then draw or place marks on the map. The shield places NATO unit symbols and the pin places waypoints.'
+      },
+      {
+        t: '02 // ATAK RADIAL MENU',
+        b: 'Right-click anywhere on the map (without dragging) to deploy the circular ATAK Radial Menu for instant tool switching. Right-click and drag to pan.'
+      },
+      {
+        t: '03 // LIVE TELEMETRY & SCALE',
+        b: 'Monitor real-time MGRS coordinates, target bearing (HDG), and range (RNG) in the bottom-right HUD. Calibrate real meters in Menu > Grid Coordinates.'
+      },
+      {
+        t: '04 // GRID & OVERLAY SYNC',
+        b: 'Open the top-right drawer (≡) to calibrate map grids, import/export tactical overlays, or enter a Room Code to share your map live with your squad.'
+      }
+    ];
+
+    let aStep = 0;
+    const renderATut = function() {
+      const s = atakSteps[aStep];
+      document.getElementById('atak-tut-h').textContent = s.t;
+      document.getElementById('atak-tut-p').textContent = s.b;
+      const dots = document.getElementById('atak-tut-dots');
+      dots.innerHTML = '';
+      atakSteps.forEach(function(_, i) {
+        const sp = document.createElement('span');
+        if (i === aStep) sp.className = 'on';
+        dots.appendChild(sp);
+      });
+      document.getElementById('atak-tut-next').textContent = aStep === atakSteps.length - 1 ? 'DONE' : 'NEXT';
+    };
+
+    const openATut = function() {
+      aStep = 0;
+      renderATut();
+      aTut.classList.add('show');
+    };
+
+    const closeATut = function() {
+      aTut.classList.remove('show');
+      localStorage.setItem('atak-tut-done', '1');
+    };
+
+    document.getElementById('atak-tut-next').onclick = function() {
+      if (aStep < atakSteps.length - 1) {
+        aStep++;
+        renderATut();
+      } else {
+        closeATut();
+      }
+    };
+    document.getElementById('atak-tut-skip').onclick = closeATut;
+
+    // Se abre automáticamente al pulsar ENTER por primera vez
+    const enterBtn = document.querySelector('#landing .enter, #landing a, #landing button');
+    if (enterBtn) {
+      enterBtn.addEventListener('click', function() {
+        if (!localStorage.getItem('atak-tut-done')) {
+          setTimeout(openATut, 350);
+        }
+      });
+    }
+
+    // Conecta el botón "Tutorial" del menú (≡) para abrirlo cuando quieras
+    document.querySelectorAll('#menu button').forEach(function(b) {
+      if ((b.textContent || '').toLowerCase().includes('tutorial')) {
+        b.addEventListener('click', function(e) {
+          e.stopImmediatePropagation();
+          document.getElementById('menu').classList.remove('open');
+          openATut();
+        }, true);
+      }
+    });
+  }
+
+})();
 </script>
 </body>
 </html>
