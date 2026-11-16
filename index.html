@@ -653,7 +653,7 @@ html.web #bar {
   font-family: monospace !important;
 }
 
-/* Barra de herramientas estilo ATAK Action Bar */
+
 html.web #toolbar {
   top: 36px !important;
   bottom: auto !important;
@@ -682,7 +682,7 @@ html.web #toolbar {
   box-shadow: 0 0 8px rgba(0, 255, 65, 0.4) !important;
 }
 
-/* Submenús anclados arriba bajo la barra */
+
 html.web #palette, html.web #drawbar, html.web #selbar, html.web #numbar, html.web #gridbar {
   top: 78px !important;
   bottom: auto !important;
@@ -694,7 +694,7 @@ html.web #palette, html.web #drawbar, html.web #selbar, html.web #numbar, html.w
   border: 1px solid #2b332b !important;
 }
 
-/* Caja de Coordenadas estilo ATAK (Esquina inferior derecha) */
+
 html.web #coord {
   top: auto !important;
   left: auto !important;
@@ -711,7 +711,7 @@ html.web #coord {
   letter-spacing: 0.5px !important;
 }
 
-/* Brújula y botones de navegación a la izquierda estilo ATAK */
+
 html.web #nav {
   top: 44px !important;
   left: 10px !important;
@@ -727,14 +727,14 @@ html.web #nav {
   font-family: monospace !important;
 }
 
-/* Paneles tácticos cuadrados y oscuros */
+
 #menu, #sympanel, #side, #nl {
   border-radius: 2px !important;
   background: rgba(12, 14, 12, 0.97) !important;
   border: 1px solid #2b332b !important;
   font-family: monospace !important;
 }
-/* Reubicación y estilo táctico del reloj (#clock) */
+
 html.web #clock {
   top: 156px !important;
   left: 10px !important;
@@ -4362,7 +4362,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   }
   .atak-petal svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
 
-  /* 8. Pop-up de las 3 líneas (#menu) COMPACTO estilo ATAK */
+  
   html.web #menu {
     top: 46px !important; bottom: auto !important; left: auto !important; right: 8px !important;
     margin: 0 !important; width: 300px !important; max-width: calc(100vw - 16px) !important;
@@ -4400,7 +4400,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     border: 1px solid #2c382c !important; color: #00ff41 !important; font-family: monospace !important;
   }
 
-  /* 9. Drawer de Maps / Waypoints / Layers compacto */
   #sympanel, #side, #nl {
     border-radius: 2px !important; background: rgba(9, 11, 9, 0.96) !important;
     border: 1px solid #2b382b !important; font-family: monospace !important;
@@ -4414,7 +4413,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     border: 1px solid #2c382c !important; color: #e2ece2 !important; font-family: monospace !important;
   }
   #sideTabs button.on { background: #ff9900 !important; color: #050805 !important; }
-    /* Barra táctil ATAK para ingresar metros */
+  
   #atak-m-prompt {
     position: fixed; top: 46px; left: 50%; transform: translateX(-50%); z-index: 9999;
     display: none; align-items: center; gap: 6px; padding: 6px 10px;
@@ -4432,10 +4431,9 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     background: #141814; color: #e2ece2; font: 700 11px monospace; cursor: pointer;
   }
   #atak-m-prompt button#atak-m-ok { background: #ff9900; color: #050805; border-color: #ffcc66; }
-  /* Oculta el tutorial viejo original */
+ 
   #tut { display: none !important; }
 
-  /* Nuevo Tutorial Táctico ATAK (#atak-tut) */
   #atak-tut {
     position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
     width: 380px; max-width: calc(100vw - 32px); z-index: 9998;
@@ -4473,8 +4471,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     background: #ff9900; color: #050805; border-color: #ffcc66;
   }
 
-      /* === PORTADA MINIMALISTA TOPOGRÁFICA ATAK (#landing) v6 === */
-  /* 1. Fondo topográfico gris visible y nítido */
   #landing {
     display: flex !important;
     align-items: center !important;
@@ -4508,7 +4504,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     display: none !important;
   }
 
-  /* Tarjeta minimalista estilo ATAK HUD */
   #landing .hero {
     position: relative !important;
     top: auto !important; left: auto !important; transform: none !important;
@@ -4525,9 +4520,8 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     z-index: 10 !important;
   }
 
-  /* Encabezado superior con propósito real del software */
   #landing .hero::before {
-    content: "RO-TAK [ENHANCED]  //  SQUAD TACTICAL MAPPING & PLANNING  ·  v2.4.1";
+    content: "RO-TAK [ENHANCED]  //  SQUAD TACTICAL MAPPING & PLANNING  ·  v0.8.2-BETA";
     display: block;
     font-family: monospace !important;
     font-size: 10.5px;
@@ -4539,7 +4533,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-    /* Lista de herramientas reales de planificación en el mapa */
   #landing .hero::after {
     content: "TOOLS:  NATO SYMBOLS  ·  MGRS GRID  ·  RANGE & BEARING  ·  WAYPOINTS & ROUTES";
     display: block;
@@ -4573,7 +4566,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     text-transform: uppercase !important;
   }
 
-  /* Todos los botones en gris oscuro minimalista */
   #landing .hero a,
   #landing .hero button {
     display: inline-flex !important;
@@ -4990,10 +4982,10 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   });
 
 
-    // --- PORTADA TÁCTICA OVERHAUL & FONDO URBANO ---
+    
   const landingEl = document.getElementById('landing');
   if (landingEl) {
-    // 1. Fondo apuntando a ./images/bg-tactical.png + viñeta oscura
+    
     let bgDiv = document.getElementById('atak-topo-bg');
     if (!bgDiv) {
       bgDiv = document.createElement('div');
@@ -5006,7 +4998,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       <div style="position:absolute;inset:0;background:radial-gradient(circle at 35% 35%, rgba(7,9,11,0.25) 0%, rgba(5,7,9,0.86) 88%);"></div>
     `;
 
-    // 2. Título en una sola línea + Emblema horizontal limpio
+    
     const heroH1 = landingEl.querySelector('.hero h1');
     if (heroH1) {
       heroH1.innerHTML = `
@@ -5021,7 +5013,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       `;
     }
 
-    // 3. Oculta "Introduction" y "My Projects" y deja solo ENTER resaltado
+    
     landingEl.querySelectorAll('a, button, span').forEach(function(el) {
       const txt = (el.textContent || '').trim().toLowerCase();
       if (txt === 'introduction' || txt === 'my projects') {
@@ -5035,7 +5027,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       }
     });
   }
-      // --- TUTORIAL TÁCTICO INDEPENDIENTE (#atak-tut) ---
+    
   if (!document.getElementById('atak-tut')) {
     const aTut = document.createElement('div');
     aTut.id = 'atak-tut';
@@ -5107,7 +5099,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     };
     document.getElementById('atak-tut-skip').onclick = closeATut;
 
-    // Se abre automáticamente al pulsar ENTER por primera vez
+    
     const enterBtn = document.querySelector('#landing .enter, #landing a, #landing button');
     if (enterBtn) {
       enterBtn.addEventListener('click', function() {
@@ -5117,7 +5109,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       });
     }
 
-    // Conecta el botón "Tutorial" del menú (≡) para abrirlo cuando quieras
+    
     document.querySelectorAll('#menu button').forEach(function(b) {
       if ((b.textContent || '').toLowerCase().includes('tutorial')) {
         b.addEventListener('click', function(e) {
