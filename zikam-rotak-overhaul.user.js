@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         RO-TAK // Zikam's Tactical Overhaul
 // @namespace    https://github.com
-// @version      0.5.8b
+// @version      0.5.9b
 // @description  RO-TAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/icon-192.png
 // @match        https://ro-tak.vercel.app/*
-// @grant        GM_xmlhttpRequest
-// @connect      raw.githubusercontent.comgit
+// @grant        none
+// @connect      raw.githubusercontent.com
 // @updateURL    https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
 // @downloadURL  https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
 // @run-at       document-start
@@ -30,34 +30,28 @@
     '<div style="font-size:10px;color:#94a3b8;margin-top:6px;">SYNCING MODULES FROM GITHUB</div>' +
     '</div></body>';
 
-  GM_xmlhttpRequest({
-    method: 'GET',
-    url: REPO_RAW + 'index.html?t=' + Date.now(),
-    onload: function(res) {
-      if (res.status !== 200 || !res.responseText) {
-        alert('Error loading RO-TAK Overhaul from GitHub (' + res.status + ')');
-        return;
-      }
-
-      let html = res.responseText;
-
+   fetch(REPO_RAW + 'index.html?t=' + Date.now())
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    })
+    .then(function(html) {
       html = html
         .replace(/(href|src)=["']\.\/images\//g, '$1="' + REPO_RAW + 'images/')
         .replace(/(href|src)=["']images\//g, '$1="' + REPO_RAW + 'images/')
         .replace(/['"]\.\/images\//g, '"' + REPO_RAW + 'images/')
         .replace(/(href|src)=["']\.?\/?icon-192\.png["']/g, '$1="' + REPO_RAW + 'icon-192.png"')
         .replace(/(href|src)=["']\.?\/?icon-512\.png["']/g, '$1="' + REPO_RAW + 'icon-512.png"')
-        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://ro-tak.vercel.app/milsymbol.js"')
-        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://ro-tak.vercel.app/symdata.js"')
-        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://ro-tak.vercel.app/supabase.js"')
+        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://vercel.app"')
+        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://vercel.app"')
+        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://vercel.app"')
         .replace(/<link rel="manifest"[^>]*>/i, '');
 
       document.open();
       document.write(html);
       document.close();
-    },
-    onerror: function() {
-      alert('Network error: Could not fetch RO-TAK Overhaul from GitHub.');
-    }
-  });
+    })
+    .catch(function(err) {
+      alert('Network error: Could not fetch RO-TAK Overhaul (' + err.message + ')');
+    });
 })();
