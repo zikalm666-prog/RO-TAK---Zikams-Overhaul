@@ -8,8 +8,8 @@
 // @match        https://ro-tak.vercel.app/*
 // @grant        GM_xmlhttpRequest
 // @connect      ://githubusercontent.com
-// @updateURL    https://://githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
-// @downloadURL  https://://githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
+// @updateURL    https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
+// @downloadURL  https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
 // @run-at       document-start
 // ==/UserScript==
 
@@ -18,18 +18,16 @@
 
   const REPO_RAW = 'https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/';
 
-  // Evitar bucle infinito si ya se inyectó el overhaul
-  if (window.__ZIKAM_ROTAK_LOADED__) return;
-  window.__ZIKAM_ROTAK_LOADED__ = true;
+  if (window.__ROTAK_ENHANCED_LOADED__) return;
+  window.__ROTAK_ENHANCED_LOADED__ = true;
 
-  // Mostrar pantalla de carga táctica mientras se descarga tu index.html desde GitHub
   window.stop();
   document.documentElement.innerHTML =
     '<head><title>RO-TAK // Zikam\'s Overhaul</title></head>' +
     '<body style="margin:0;background:#090b09;color:#00ff41;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;">' +
     '<div style="border:1px solid #00ff41;padding:18px 30px;background:#0d100d;text-align:center;">' +
-    '<div style="font-size:15px;font-weight:800;letter-spacing:2px;">INITIALIZING ATAK OVERHAUL...</div>' +
-    '<div style="font-size:10px;color:#94a3b8;margin-top:6px;">SYNCING C2 MODULES FROM GITHUB</div>' +
+    '<div style="font-size:15px;font-weight:800;letter-spacing:2px;">INITIALIZING RO-TAK OVERHAUL...</div>' +
+    '<div style="font-size:10px;color:#94a3b8;margin-top:6px;">SYNCING MODULES FROM GITHUB</div>' +
     '</div></body>';
 
   GM_xmlhttpRequest({
@@ -40,7 +38,7 @@
         alert('Error loading RO-TAK Overhaul from GitHub (' + res.status + ')');
         return;
       }
-
+      
       let html = res.responseText;
 
       html = html
