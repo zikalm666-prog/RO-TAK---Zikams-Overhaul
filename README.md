@@ -17,7 +17,7 @@ Dragging the **Compass** tool displays live **Azimuth (`°`)**, **Target 8-Digit
    * **Chrome / Edge / Brave:** [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=es) or [Violentmonkey](https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag?pli=)
    * **Firefox:** [Tampermonkey](https://addons.mozilla.org/es-CL/firefox/addon/tampermonkey/) or [Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/)
 2. Click the direct install link below and press **Install**:
-   * **[Install RO-TAK Tactical Overhaul (`zikam-rotak-overhaul.user.js`)](https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/blob/main/zikam-rotak-overhaul.user.js)**
+   * **[Install RO-TAK Tactical Overhaul (`zikam-rotak-overhaul.user.js`)](https://githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js)**
 3. Open **[https://ro-tak.vercel.app/](https://ro-tak.vercel.app/)** (or refresh if already open). The overhaul loads automatically and stays up to date via GitHub.
 
 ---
