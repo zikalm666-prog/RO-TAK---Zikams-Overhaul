@@ -1,75 +1,67 @@
-<div align="center">
+# RO-TAK // Zikam's Tactical Overhaul (Add-On)
 
-<p><a href="https://drive.google.com/drive/folders/1aNht4-3zNclrdiIk4wFi7Pp6pz-_BBuo"><img src="https://img.shields.io/badge/BRM5_MAPS-GOOGLE_DRIVE-22c55e?style=for-the-badge&labelColor=444444&logo=googledrive&logoColor=white" alt="BRM5 map images on Google Drive"></a></p>
+> **Full ATAK-inspired C2 UI Overhaul & Tactical Mechanics Add-On for [Banana's RO-TAK](https://vercel.app).**
 
-<img src="images/op-silent-talon.webp" alt="Op Silent Talon: an example plan drawn in RO-TAK" width="100%">
+This add-on injects a military-grade **Android Team Awareness Kit (ATAK)** command & control interface directly on top of the official **RO-TAK** web app (`https://vercel.app`), preserving full multiplayer room compatibility while upgrading the HUD, navigation, and tactical tools.
 
-# RO-TAK
+![Tactical Operations Overview](screenshots/SC3.png)
 
-**Real-time shared map annotation for games.** Upload a map, draw, drop military symbols and waypoints, measure bearings and share a room link.
+---
 
-<p>
-<a href="https://github.com/rice-evans/RO-TAK"><img src="https://img.shields.io/github/stars/rice-evans/RO-TAK?style=flat&logo=github" alt="Stars"></a>
-<a href="https://github.com/rice-evans/RO-TAK/blob/main/LICENSE"><img src="https://img.shields.io/github/license/rice-evans/RO-TAK?style=flat" alt="License"></a>
-<a href="https://github.com/rice-evans/RO-TAK/commits/main"><img src="https://img.shields.io/github/last-commit/rice-evans/RO-TAK?style=flat" alt="Last commit"></a>
-<a href="https://github.com/rice-evans/RO-TAK/releases/latest"><img src="https://img.shields.io/github/v/release/rice-evans/RO-TAK?style=flat" alt="Release"></a>
-<a href="https://github.com/rice-evans/RO-TAK/releases"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fro-tak.vercel.app%2Fapi%2Fdownloads&style=flat" alt="Downloads"></a>
-<img src="https://img.shields.io/badge/JavaScript-f7df1e?style=flat&logo=javascript&logoColor=black" alt="JavaScript">
-<img src="https://img.shields.io/badge/Electron-47848f?style=flat&logo=electron&logoColor=white" alt="Electron">
-</p>
+## Quick Installation (1-Click Add-On)
 
-<p>
-<a href="https://ro-tak.vercel.app"><img src="https://img.shields.io/badge/WEB_APP-RO--TAK.VERCEL.APP-3b82f6?style=for-the-badge&labelColor=444444" alt="Web app"></a>
-</p>
+1. Install a Userscript manager in your browser:
+   * **Chrome / Edge / Brave:** [Tampermonkey](https://tampermonkey.net) or [Violentmonkey](https://github.io)
+   * **Firefox:** [Tampermonkey](https://mozilla.org) or [Violentmonkey](https://mozilla.org)
+2. Click the direct install link below and press **Install**:
+   * **[Install RO-TAK Tactical Overhaul (`zikam-rotak-overhaul.user.js`)](https://githubusercontent.com)**
+3. Open **[https://vercel.app](https://vercel.app)** (or refresh if already open). The overhaul loads automatically and stays up to date via GitHub.
 
-<p>
-<a href="https://github.com/rice-evans/RO-TAK/releases/latest"><img src="https://img.shields.io/badge/DOWNLOAD-WINDOWS_%28.EXE%29-3b82f6?style=for-the-badge&labelColor=444444" alt="Download for Windows"></a>
-<a href="https://github.com/rice-evans/RO-TAK/releases/latest"><img src="https://img.shields.io/badge/DOWNLOAD-MACOS_APPLE_SILICON-000000?style=for-the-badge&labelColor=444444&logo=apple&logoColor=white" alt="Download for macOS Apple Silicon"></a>
-<a href="https://github.com/rice-evans/RO-TAK/releases/latest"><img src="https://img.shields.io/badge/DOWNLOAD-MACOS_INTEL-1f1f1f?style=for-the-badge&labelColor=444444&logo=apple&logoColor=white" alt="Download for macOS Intel"></a>
-</p>
+---
 
-<p>
-<a href="https://github.com/rice-evans/RO-TAK/releases">Releases</a> · <a href="https://github.com/rice-evans/RO-TAK/blob/main/CONTROLS.md">Controls</a> · <a href="https://github.com/rice-evans/RO-TAK/blob/main/SECURITY.md">Security</a> · <a href="https://github.com/rice-evans/RO-TAK/blob/main/LICENSE">License</a>
-</p>
+## Interface Showcase
 
-<p>If you enjoy RO-TAK, be sure to star the GitHub repository, and post photos in respective Discord servers and @ me!</p>
+### Tactical C2 Landing & Full HUD Overhaul
+* **Minimalist Tactical HUD:** Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom scale bar, and live **MGRS / HDG / RNG** telemetry.
+* **Custom Landing Screen:** Topographic backdrop with author attribution (`@zikaalm`), custom tactical icons, and repository switcher (`[MOD]` / `[BASE]`).
 
-</div>
+| Custom Tactical Landing | Full C2 HUD & Sidebar |
+| :---: | :---: |
+| ![Landing Page](screenshots/SC1.png) | ![C2 HUD Overview](screenshots/SC2.png) |
 
-## What it does and does not do
+---
 
-- Runs on its own. It does not read, inject into or modify any game.
-- No accounts and no cookies. The website counts anonymous visits with Vercel Web Analytics. The desktop app sends no analytics.
-- Rooms sync through Supabase and are deleted after 24 hours with nobody connected.
-- Rooms are not private. Anyone can read a room's map and marks, so do not put anything secret in one.
-- Uploaded maps are checked with OpenAI's moderation endpoint before they are stored.
+### Guided 9-Line MEDEVAC / CAS & Native Map Loader
+* **Didactic 9-Line Drawer:** Built-in tactical field guide explaining every line of **MEDEVAC** and **CAS** requests with one-click map grid picking and formatted clipboard export.
+* **Native Map Selector & Sawang Presets `[WIP]`:** Load full-resolution maps (**Sawang 15K** & **Ronograd 16K**) and 2-point MGRS/meter calibrations straight from the `≡` menu.
 
-## Layout
+| MEDEVAC 9-Line Guide | CAS 9-Line Guide | Native Maps & Presets |
+| :---: | :---: | :---: |
+| ![MEDEVAC 9-Line](screenshots/SC4.png) | ![CAS 9-Line](screenshots/SC5.png) | ![Menu Maps & Presets](screenshots/SC6.png) |
 
-- `index.html` - the whole app. The website and the Electron overlay load the same file.
-- `desktop/` - Electron wrapper.
-- `supabase/` - SQL and the `upload-map` edge function.
-- `.github/` - builds the installers on GitHub Actions from this source.
+---
 
-## Run your own copy
+## Key Mechanics & Controls
 
-1. Create a Supabase project and run `supabase/moderation.sql`, then `supabase/host.sql`.
-2. Create a public storage bucket named `maps`.
-3. Deploy `supabase/functions/upload-map` with JWT verification off and an `OPENAI_API_KEY` secret.
-4. Put your project URL and publishable key in `index.html` (`SUPABASE_URL`, `SUPABASE_KEY`).
-5. Host the folder on any static host. `vercel.json` rewrites `/play` to `index.html`.
+* **Right-Click ATAK Radial Menu:** Tap `Right-Click` anywhere on the map to deploy an 8-petal circular tool wheel (`Symbols`, `Waypoints`, `Compass`, `Ping`, `Draw`, `Text`, `Eraser`, `Move/Pan`). Hold `Right-Click + Drag` to pan smoothly.
+* **One-Click MGRS Copy (`Ctrl + Click`):** Hold `Ctrl` and left-click any calibrated point on the map to copy its exact 8-digit MGRS coordinate to your clipboard.
+* **Enhanced Compass & Rangefinder:** Dragging the compass displays **Azimuth (`°`)**, **Target 8-Digit MGRS**, and **Real Distance (`m` / `km`)** in real time.
+* **Didactic NATO Symbol Builder:** Visible inline descriptions and examples for MIL-STD-2525D / APP-6D fields.
 
-## Verify a download
+| Action | Shortcut / Input |
+| :--- | :--- |
+| **Deploy ATAK Radial Menu** | `Right-Click` (tap) on map |
+| **Pan Map** | `Right-Click + Drag` or `Middle-Click + Drag` |
+| **Copy 8-Digit MGRS** | `Ctrl + Left-Click` on map |
+| **Measure Bearing & Range** | Select **Compass** tool + `Drag` |
+| **Zoom / Rotate Map** | `Scroll` / `Alt + Scroll` |
+| **Reset North-Up** | Click top-left **Compass** |
+| **Undo / Paste Map** | `Ctrl + Z` / `Ctrl + V` |
+| **Close Menus / Cancel** | `Esc` |
 
-Installers are built by GitHub Actions from this repo and carry a signed build attestation.
+---
 
-```
-gh attestation verify RO-TAK-Setup-x.y.z.exe --repo rice-evans/RO-TAK
-```
+## Credits & Attribution
 
-Each release also has `SHA256SUMS-Windows.txt` and `SHA256SUMS-macOS.txt`. Compare with `Get-FileHash <file>` on Windows or `shasum -a 256 <file>` on macOS.
-
-## License
-
-MIT, see `LICENSE`. The landing page photos belong to their credited owners and are not covered by it.
-Third party: milsymbol (MIT), supabase-js (MIT), IBM Plex Sans (SIL OFL).
+* **Original Project:** [Banana's RO-TAK](https://github.com) by **rice-evans** (MIT License).
+* **UI Overhaul & Add-On Mechanics:** **Zikam** (`@zikaalm` on Discord).
