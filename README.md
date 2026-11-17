@@ -2,7 +2,7 @@
 
 > **Full ATAK-inspired C2 UI Overhaul & Tactical Mechanics Add-On for [Banana's RO-TAK](https://ro-tak.vercel.app/).**
 
-This add-on injects a military-grade **Android Team Awareness Kit (ATAK)** command & control interface directly on top of the official **RO-TAK** web app (`https://ro-tak.vercel.app/`), preserving full multiplayer room compatibility while upgrading the HUD, navigation, and tactical tools.
+This add-on injects a cleaner **Android Team Awareness Kit (ATAK)** command & control interface directly on top of the official **RO-TAK** web app (`https://ro-tak.vercel.app/`), preserving full multiplayer room compatibility with the base version while upgrading the HUD, navigation, and tactical tools.
 
 ### Live Tactical Operations & Enhanced Compass Rangefinder
 Dragging the **Compass** tool displays live **Azimuth (`°`)**, **Target 8-Digit MGRS**, and **Real Distance (`m` / `km`)** directly over the line of sight, paired with real-time bottom-right telemetry.
@@ -14,8 +14,8 @@ Dragging the **Compass** tool displays live **Azimuth (`°`)**, **Target 8-Digit
 ## Quick Installation (1-Click Add-On)
 
 1. Install a Userscript manager in your browser:
-   * **Chrome / Edge / Brave:** [Tampermonkey](https://tampermonkey.net) or [Violentmonkey](https://github.io)
-   * **Firefox:** [Tampermonkey](https://mozilla.org) or [Violentmonkey](https://mozilla.org)
+   * **Chrome / Edge / Brave:** [Tampermonkey](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=es) or [Violentmonkey](https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag?pli=)
+   * **Firefox:** [Tampermonkey](https://addons.mozilla.org/es-CL/firefox/addon/tampermonkey/) or [Violentmonkey](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/)
 2. Click the direct install link below and press **Install**:
    * **[Install RO-TAK Tactical Overhaul (`zikam-rotak-overhaul.user.js`)](https://githubusercontent.com)**
 3. Open **[https://ro-tak.vercel.app/](https://ro-tak.vercel.app/)** (or refresh if already open). The overhaul loads automatically and stays up to date via GitHub.
@@ -66,5 +66,5 @@ Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom sca
 
 ## Credits & Attribution
 
-* **Original Project:** [Banana's RO-TAK](https://github.com) by **rice-evans** (MIT License).
+* **Original Project:** [Banana's RO-TAK](https://github.com/rice-evans/RO-TAK) by **rice-evans** (MIT License).
 * **UI Overhaul & Add-On Mechanics:** **Zikam** (`@zikaalm` on Discord).

@@ -390,7 +390,17 @@ try { if (document.documentElement.className === 'web' && !navigator.standalone 
   @keyframes lslide { to { transform: translateX(calc(-50% - 6px)); } }
   #landing .veil { pointer-events: none; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,13,16,.78) 0%, rgba(11,13,16,.45) 40%, rgba(11,13,16,.08) 100%); }
   #landing .hero { pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; text-align: left; padding: 24px clamp(24px, 8vw, 128px); }
-  #landing .avatar { display: block; width: 140px; height: 140px; margin: 0; border-radius: 50%; object-fit: cover; background: #fff; border: 1px solid rgba(255,255,255,.4); box-shadow: 0 8px 32px rgba(0,0,0,.6); animation: lrise .8s ease-out .1s both; }
+  #landing .avatar {
+      width: 56px !important;
+      height: 56px !important;
+      border-radius: 3px !important;
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
+      box-shadow: none !important;
+    }
   #landing .hero h1 { text-shadow: 0 2px 24px rgba(0,0,0,.6); margin: 0 0 40px; font-weight: 600; font-size: clamp(44px, 9vw, 112px); line-height: .98; letter-spacing: -.035em; color: #fff; max-width: 9ch; animation: lrise .8s ease-out .3s both; }
   #landing .enter { pointer-events: auto; display: inline-flex; align-items: center; gap: 10px; padding: 14px 26px; border: 1px solid rgba(255,255,255,.4); border-radius: 6px; background: rgba(255,255,255,.06); color: #fff; font: 500 13px "IBM Plex Sans", sans-serif; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; transition: background .15s, color .15s, border-color .15s; animation: lrise .8s ease-out .5s both; }
   #landing a.enter { text-decoration: none; }
@@ -775,9 +785,9 @@ html.web #clock::before {
     <h1>Banana's <span style="white-space:nowrap">RO-TAK</span> <span style="display:block; font-size:0.4em; font-family:monospace; color:#00ff41; text-shadow: 0 0 8px rgba(0,255,65,0.4); letter-spacing:4px; margin-top:6px;">[ ENHANCED ]</span></h1>
 
     <div class="enter-row">
-      <button id="lenter" class="enter" type="button">Enter <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+      <button id="lenter" class="enter" type="button" onclick="document.getElementById('landing').classList.add('out'); document.body.classList.remove('is-landing');">Enter <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
       <div class="dl"><button id="ldl" class="enter" type="button" aria-haspopup="menu" aria-expanded="false">Download RO-TAK <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button><div id="ldlm" class="dl-menu" role="menu" hidden><a role="menuitem" href="/api/download?f=win">Windows<img src="/images/os-windows.png" alt=""></a><a role="menuitem" href="/api/download?f=mac-intel">Mac (Intel)<img class="wide" src="/images/os-intel.png" alt=""></a><a role="menuitem" href="/api/download?f=mac-arm">Mac (Apple)<img src="/images/os-apple.png" alt=""></a></div></div>
-      <a class="enter" id="lgh" href="https://github.com/rice-evans/RO-TAK" target="_blank" rel="noopener"><svg viewBox="0 0 16 16"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a>
+      <button class="enter" id="lgh" type="button"><svg viewBox="0 0 16 16"><path fill="currentColor" stroke="none" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</button>
     </div>
   </main>
   <nav class="legal"><button type="button" data-lg="privacy">Privacy policy</button><button type="button" data-lg="terms">Terms of service</button><button type="button" id="lintro">Introduction</button><a href="https://emergency-protocols.vercel.app/" target="_blank" rel="noopener">My Projects</a></nav>
@@ -1810,32 +1820,52 @@ function measText() {
 }
 function drawMeas() {
   if (!meas) return;
-  const a = meas.a, b = meas.b, u = 1 / v.s, F = '"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-  const ring = (q, rad) => { ctx.beginPath(); ctx.arc(q[0], q[1], rad * u, 0, TAU); ctx.stroke(); };
+  const a = meas.a, b = meas.b, u = 1 / v.s, F = 'monospace';
+  const ax = a.at(0), ay = a.at(1), bx = b.at(0), by = b.at(1);
+  const ring = (q, rad) => { ctx.beginPath(); ctx.arc(q.at(0), q.at(1), rad * u, 0, TAU); ctx.stroke(); };
   ctx.save();
   ctx.lineCap = 'butt';
   ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 1.5 * u; ctx.setLineDash([5 * u, 4 * u]);
-  ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(a[0], a[1] - 46 * u); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(ax, ay - 46 * u); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.save(); ctx.translate(a[0], a[1] - 54 * u); ctx.rotate(-v.r);
-  ctx.font = `700 ${11 * u}px ${F}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff'; ctx.fillText('N', 0, 0);
+  ctx.save(); ctx.translate(ax, ay - 54 * u); ctx.rotate(-v.r);
+  ctx.font = `700 ${11 * u}px ${F}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#00ff41'; ctx.fillText('N', 0, 0);
   ctx.restore();
-  ctx.strokeStyle = '#facc15'; ctx.lineWidth = 2.5 * u;
-  ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+  ctx.strokeStyle = '#00ff41'; ctx.lineWidth = 2.5 * u;
+  ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
   ring(a, meas.ia ? 16 : 5);
   ring(b, meas.ib ? 16 : 5);
   const t = measText();
   if (t) {
-    ctx.save(); ctx.translate((a[0] + b[0]) / 2, (a[1] + b[1]) / 2); ctx.rotate(-v.r);
-    ctx.font = `700 ${13 * u}px ${F}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    const gt = grid && img ? fmt8(toGrid(b)) : '', tw = Math.max(ctx.measureText(t).width, gt ? ctx.measureText(gt).width : 0), top = gt ? -50 : -32;
-    ctx.fillStyle = 'rgba(20,20,22,.94)'; ctx.fillRect(-tw / 2 - 7 * u, top * u, tw + 14 * u, (gt ? 40 : 22) * u);
-    ctx.fillStyle = '#facc15'; ctx.fillText(t, 0, (gt ? -39 : -21) * u);
-    if (gt) ctx.fillText(gt, 0, -21 * u);
+    const distPx = Math.hypot(bx - ax, by - ay);
+    const mpp = parseFloat(localStorage.getItem('atak-mpp') || '0') || 0;
+    let dt = 'DIST: ' + Math.round(distPx) + 'px';
+    if (mpp > 0) {
+      const dm = Math.round(distPx * mpp);
+      dt = 'DIST: ' + (dm >= 1000 ? (dm / 1000).toFixed(2) + 'km' : dm + 'm');
+    }
+    ctx.save(); ctx.translate((ax + bx) / 2, (ay + by) / 2); ctx.rotate(-v.r);
+    ctx.font = `700 ${12 * u}px ${F}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const gt = grid && img ? fmt8(toGrid(b)) : '';
+    const tw = Math.max(ctx.measureText(t).width, ctx.measureText(dt).width, gt ? ctx.measureText(gt).width : 0);
+    const rows = gt ? 3 : 2;
+    const bh = (rows * 17 + 8) * u;
+    const top = -bh - 10 * u;
+    const bw = tw + 18 * u;
+    ctx.fillStyle = 'rgba(9,11,9,.96)'; ctx.fillRect(-bw / 2, top, bw, bh);
+    ctx.strokeStyle = '#00ff41'; ctx.lineWidth = 1.2 * u; ctx.strokeRect(-bw / 2, top, bw, bh);
+    ctx.fillStyle = '#00ff41'; ctx.fillText(t, 0, top + 12 * u);
+    if (gt) {
+      ctx.fillStyle = '#e2e8f0'; ctx.fillText(gt, 0, top + 29 * u);
+      ctx.fillStyle = '#ff9900'; ctx.fillText(dt, 0, top + 46 * u);
+    } else {
+      ctx.fillStyle = '#ff9900'; ctx.fillText(dt, 0, top + 29 * u);
+    }
     ctx.restore();
   }
   ctx.restore();
 }
+
 addEventListener('keydown', e => { if (e.key === 'Escape' && meas && e.target.tagName !== 'INPUT') { meas = null; draw(); } });
 
 let pings = [], pingRaf = 0, pingSent = 0, myNick = '';
@@ -4378,7 +4408,32 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   #settings, #gridsec, #legend { border-top: 1px solid #2b382b !important; padding-top: 8px !important; }
   #settings { grid-template-columns: 1fr 75px 44px !important; gap: 6px !important; }
   #binds { grid-template-columns: 1fr !important; grid-auto-flow: row !important; gap: 4px !important; }
-  #legend { transform: scale(0.82); transform-origin: top left; margin-bottom: -80px !important; }
+   #legend {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 5px !important;
+    width: 100% !important;
+    transform: none !important;
+    margin-bottom: 0 !important;
+  }
+  #legend .lgfr {
+    grid-column: 1 / -1 !important;
+    grid-template-columns: 56px repeat(4, 1fr) !important;
+    gap: 4px 2px !important;
+    width: 100% !important;
+    font-size: 10px !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 6px !important;
+    border-bottom: 1px solid #1f291f !important;
+  }
+  #legend .lgfr canvas {
+    width: 30px !important;
+    height: 26px !important;
+  }
+  #legend .lg {
+    width: 100% !important;
+    gap: 10px !important;
+  }
   #menu input[type="text"], #menu input[type="number"] {
     height: 24px !important; border-radius: 2px !important; background: #141814 !important;
     border: 1px solid #2c382c !important; color: #00ff41 !important; font-family: monospace !important; font-size: 11px !important;
@@ -4391,9 +4446,19 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   #menu button:hover, #menu .mbtn:hover {
     background: #ff9900 !important; color: #050805 !important; border-color: #ffcc66 !important;
   }
-  #menu .mbtn.alt, #gridsec button.alt {
-    background: #0d100d !important; border-color: #222b22 !important; color: #9ab09a !important;
-  }
+     #menu .mbtn.alt, #gridsec button.alt {
+      background: #0d100d !important; border-color: #222b22 !important; color: #9ab09a !important;
+    }
+    #expBtn, #impBtn {
+      width: auto !important;
+      margin: 0 !important;
+    }
+    #impBtn {
+      background: #0d100d !important;
+      border-color: #222b22 !important;
+      color: #9ab09a !important;
+    }
+
   #menu input[type="range"], #menu input[type="checkbox"] { accent-color: #00ff41 !important; }
   #binds b {
     border-radius: 2px !important; background: #141814 !important;
@@ -4412,8 +4477,333 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     border-radius: 2px !important; background: #141814 !important;
     border: 1px solid #2c382c !important; color: #e2ece2 !important; font-family: monospace !important;
   }
+  #sympanel {
+    border-top: 2px solid #00ff41 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9) !important;
+  }
+  #sympanel .sb-head {
+    background: #060806 !important;
+    border: 1px solid #222b22 !important;
+    border-radius: 2px !important;
+    padding: 6px 8px !important;
+  }
+  #sympanel .sb-code {
+    color: #00ff41 !important;
+    font-family: monospace !important;
+    font-size: 10.5px !important;
+    letter-spacing: 0.6px !important;
+  }
+  #sympanel .sb-f span {
+    color: #9ab09a !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px !important;
+  }
+  #sympanel select, #sympanel input[type="text"], #sympanel input[type="search"] {
+    height: 26px !important;
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #00ff41 !important;
+    font-family: monospace !important;
+    font-size: 11px !important;
+  }
+  #sympanel select:focus, #sympanel input:focus {
+    border-color: #ff9900 !important;
+  }
+  #sympanel input[type="checkbox"] {
+    accent-color: #00ff41 !important;
+  }
+  #sympanel .sb-list {
+    border-radius: 2px !important;
+    background: #0d100d !important;
+    border: 1px solid #2b382b !important;
+  }
+  #sympanel .sb-row {
+    border-bottom: 1px solid #182018 !important;
+    font-size: 11px !important;
+  }
+  #sympanel .sb-row:hover {
+    background: #182218 !important;
+  }
+  #sympanel .sb-row.on {
+    background: rgba(255, 153, 0, 0.22) !important;
+    border-left: 3px solid #ff9900 !important;
+    color: #ffffff !important;
+  }
+  #sympanel summary {
+    color: #00ff41 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    border-top: 1px solid #2b382b !important;
+    padding-top: 8px !important;
+  }
   #sideTabs button.on { background: #ff9900 !important; color: #050805 !important; }
-  
+  #nl {
+    top: 42px !important;
+    width: 340px !important;
+    max-width: calc(100vw - 32px) !important;
+    background: rgba(9, 11, 9, 0.97) !important;
+    border-right: 1px solid #00ff41 !important;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.9) !important;
+    font-family: monospace !important;
+  }
+  #nlEdge { display: none !important; }
+  #nlGrip {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    right: -26px !important;
+    width: 26px !important;
+    height: 92px !important;
+    margin-top: -46px !important;
+    background: rgba(9, 11, 9, 0.96) !important;
+    border: 1px solid #00ff41 !important;
+    border-left: 0 !important;
+    border-radius: 0 3px 3px 0 !important;
+    box-shadow: 4px 0 14px rgba(0, 255, 65, 0.18) !important;
+    cursor: pointer !important;
+  }
+  #nlGrip::before {
+    content: "9-LINE" !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #00ff41 !important;
+    font: 800 10px monospace !important;
+    letter-spacing: 1.5px !important;
+    writing-mode: vertical-rl !important;
+    text-orientation: mixed !important;
+  }
+  #nlGrip:hover {
+    background: #141c14 !important;
+    box-shadow: 4px 0 18px rgba(0, 255, 65, 0.4) !important;
+  }
+  #nlTabs {
+    display: flex !important;
+    gap: 6px !important;
+    background: #060806 !important;
+    border-bottom: 1px solid #2b382b !important;
+    padding: 8px 10px !important;
+  }
+  #nlTabs button {
+    flex: 1 !important;
+    height: 28px !important;
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #9ab09a !important;
+    font-family: monospace !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    white-space: nowrap !important;
+  }
+  #nlTabs button:hover {
+    border-color: #00ff41 !important;
+    color: #ffffff !important;
+  }
+  #nlTabs button.on {
+    background: #ff9900 !important;
+    color: #050805 !important;
+    border-color: #ffcc66 !important;
+    font-weight: 800 !important;
+  }
+  #nlTabs #nlX {
+    flex: 0 0 30px !important;
+    background: #1a1212 !important;
+    border-color: #4a1c1c !important;
+    color: #ff5555 !important;
+  }
+  #nlTabs #nlX:hover {
+    background: #ff3b3b !important;
+    color: #ffffff !important;
+  }
+  #nlBody {
+    padding: 10px 12px !important;
+  }
+  .nlr {
+    display: block !important;
+    border-bottom: 1px solid #1a221a !important;
+    padding: 10px 0 !important;
+  }
+  .nlr-head {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 4px !important;
+  }
+  .nlr > b, .nlr-head > b {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    padding: 0 5px !important;
+    border-radius: 2px !important;
+    background: #141c14 !important;
+    border: 1px solid #00ff41 !important;
+    color: #00ff41 !important;
+    font-family: monospace !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    flex-shrink: 0 !important;
+  }
+  .nlr > span, .nlr-head > span {
+    color: #e2ece2 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.3 !important;
+  }
+  .nlg, .nlopts {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 6px !important;
+    width: 100% !important;
+  }
+  #nl input[type="text"], #nl input:not([type]), #nl textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 28px !important;
+    padding: 5px 8px !important;
+    border-radius: 2px !important;
+    background: #121612 !important;
+    border: 1px solid #2c382c !important;
+    color: #00ff41 !important;
+    font-family: monospace !important;
+    font-size: 11.5px !important;
+  }
+  #nl input:focus, #nl textarea:focus {
+    border-color: #ff9900 !important;
+    outline: none !important;
+  }
+  #nl .nlnotes {
+    min-height: 240px !important;
+    background: #0d100d !important;
+    border: 1px solid #2b382b !important;
+    color: #d8e2d8 !important;
+    padding: 10px !important;
+    line-height: 1.5 !important;
+    resize: vertical !important;
+  }
+  .nlc {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    width: auto !important;
+    min-width: 135px !important;
+    height: auto !important;
+    min-height: 28px !important;
+    padding: 4px 8px !important;
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #cbd5e1 !important;
+    font-family: monospace !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+  }
+  .nlc input {
+    width: 38px !important;
+    min-height: 20px !important;
+    height: 20px !important;
+    padding: 0 4px !important;
+    text-align: center !important;
+    background: #090b09 !important;
+    border: 1px solid #3a4d3a !important;
+    color: #ff9900 !important;
+    font-weight: 700 !important;
+  }
+  .nlo {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: fit-content !important;
+    height: auto !important;
+    min-height: 26px !important;
+    padding: 4px 9px !important;
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #b8c7b8 !important;
+    font-family: monospace !important;
+    font-size: 10.5px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+    cursor: pointer !important;
+  }
+  .nlo:hover {
+    border-color: #00ff41 !important;
+    color: #ffffff !important;
+  }
+  .nlo.on {
+    background: rgba(0, 255, 65, 0.16) !important;
+    border-color: #00ff41 !important;
+    color: #00ff41 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 0 8px rgba(0, 255, 65, 0.25) !important;
+  }
+  .nlpk {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 30px !important;
+    height: 28px !important;
+    flex-shrink: 0 !important;
+    border-radius: 2px !important;
+    background: #141814 !important;
+    border: 1px solid #2c382c !important;
+    color: #00ff41 !important;
+    cursor: pointer !important;
+  }
+  .nlpk:hover, .nlpk.on {
+    background: #ff9900 !important;
+    border-color: #ffcc66 !important;
+    color: #050805 !important;
+  }
+  #nlFoot {
+    display: flex !important;
+    gap: 8px !important;
+    background: #060806 !important;
+    border-top: 1px solid #2b382b !important;
+    padding: 10px 12px !important;
+  }
+  #nlFoot button {
+    flex: 1 !important;
+    height: 30px !important;
+    border-radius: 2px !important;
+    background: #ff9900 !important;
+    border: 1px solid #ffcc66 !important;
+    color: #050805 !important;
+    font-family: monospace !important;
+    font-size: 11.5px !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    cursor: pointer !important;
+  }
+  #nlFoot button.alt {
+    background: #141814 !important;
+    border-color: #2c382c !important;
+    color: #9ab09a !important;
+  }
+  #nlFoot button.arm {
+    background: #ff3b3b !important;
+    border-color: #ff6666 !important;
+    color: #ffffff !important;
+  }
+
   #atak-m-prompt {
     position: fixed; top: 46px; left: 50%; transform: translateX(-50%); z-index: 9999;
     display: none; align-items: center; gap: 6px; padding: 6px 10px;
@@ -4471,192 +4861,92 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     background: #ff9900; color: #050805; border-color: #ffcc66;
   }
 
-  #landing {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background-color: #0b0d10 !important;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://w3.org' width='500' height='500' viewBox='0 0 500 500'%3E%3Cg fill='none' stroke='%23cbd5e1' stroke-opacity='0.24' stroke-width='1.5'%3E%3Cpath d='M-40 60 Q 100 10 220 90 T 540 50'/%3E%3Cpath d='M-40 120 Q 120 60 240 145 T 540 110'/%3E%3Cpath d='M-40 185 Q 140 115 260 205 T 540 175'/%3E%3Cpath d='M-40 255 Q 130 185 280 265 T 540 240'/%3E%3Cpath d='M-40 325 Q 110 265 270 340 T 540 310'/%3E%3Cpath d='M-40 395 Q 130 345 250 410 T 540 380'/%3E%3Cpath d='M-40 465 Q 150 415 290 480 T 540 450'/%3E%3Cellipse cx='360' cy='175' rx='85' ry='48' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='360' cy='175' rx='48' ry='26' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='360' cy='175' rx='18' ry='9' transform='rotate(-18 360 175)'/%3E%3Cellipse cx='135' cy='355' rx='95' ry='52' transform='rotate(14 135 355)'/%3E%3Cellipse cx='135' cy='355' rx='55' ry='28' transform='rotate(14 135 355)'/%3E%3Cellipse cx='135' cy='355' rx='22' ry='11' transform='rotate(14 135 355)'/%3E%3C/g%3E%3C/svg%3E") !important;
-    background-repeat: repeat !important;
-    background-size: 500px 500px !important;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
-    overflow: hidden !important;
-  }
+          #landing {
+      display: flex !important; align-items: center !important; justify-content: center !important;
+      background-color: #0b0d10 !important; overflow: hidden !important;
+    }
+    #landing::before, #landing::after { display: none !important; content: none !important; }
+    #landing > *:not(.hero):not(nav):not(footer):not(.foot):not(.updated):not(#atak-topo-bg) { display: none !important; }
+    #landing .hero img:not(.avatar):not(#atak-discord-pfp), #landing .hero .poppy, #landing .chat { display: none !important; }
+    #landing .hero {
+      position: relative !important; top: auto !important; left: auto !important; transform: none !important;
+      height: auto !important; min-height: 0 !important; width: 660px !important; max-width: calc(100vw - 32px) !important;
+      background: rgba(11, 13, 15, 0.88) !important; backdrop-filter: blur(10px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important; border-radius: 3px !important;
+      padding: 34px 40px !important; box-shadow: 0 28px 80px rgba(0, 0, 0, 0.9) !important; margin: 0 !important; z-index: 10 !important;
+      overflow: visible !important;
+    }
+    #landing .hero::before { display: none !important; content: none !important; }
+    #landing .hero::after {
+      content: "TOOLS:  9-LINE  ·  MGRS GRID  ·  RANGE & BEARING  ·  RADIAL MENU";
+      display: block; font-family: monospace !important; font-size: 10px; font-weight: 600;
+      color: #7c8b99; letter-spacing: 1px; margin-top: 24px; padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    #landing .atak-avatars-row {
+      display: flex !important; align-items: center !important; justify-content: space-between !important;
+      gap: 16px !important; margin-bottom: 18px !important;
+    }
+    #landing .avatar {
+      width: 56px !important; height: 56px !important; border-radius: 3px !important; margin: 0 !important; flex-shrink: 0 !important;
+      background: transparent !important; background-color: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.14) !important; box-shadow: none !important;
+    }
+    #landing #atak-mod-card, #landing #atak-mod-card * { background-color: transparent !important; text-shadow: none !important; }
+    #landing #atak-mod-card { background: rgba(217, 38, 38, 0.10) !important; }
+    #landing .hero h1 { font-size: 40px !important; font-weight: 800 !important; margin: 0 0 18px 0 !important; text-transform: uppercase !important; }
+    #landing .hero p {
+      display: block !important; font-family: monospace !important; font-size: 12.5px !important;
+      line-height: 1.55 !important; color: #94a3b8 !important; max-width: 520px !important; margin: 0 0 24px 0 !important;
+    }
+       #landing .hero a, #landing .hero button {
+      pointer-events: auto !important; cursor: pointer !important;
+      display: inline-flex !important; align-items: center !important; justify-content: center !important;
+      gap: 8px !important; white-space: nowrap !important;
+      height: 40px !important; padding: 0 18px !important; margin: 4px 8px 4px 0 !important; border-radius: 2px !important;
+      background: #13171c !important; background-color: #13171c !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important; color: #e2e8f0 !important;
+      font-family: monospace !important; font-size: 11.5px !important; font-weight: 700 !important;
+      text-transform: uppercase !important; letter-spacing: 1.1px !important; text-decoration: none !important;
+      box-shadow: none !important;
+    }
 
-  #landing::before,
-  #landing::after {
-    display: none !important;
-    content: none !important;
-  }
+    #landing .hero a svg, #landing .hero button svg {
+      width: 15px !important; height: 15px !important; min-width: 15px !important; min-height: 15px !important;
+      flex-shrink: 0 !important; display: inline-block !important; vertical-align: middle !important;
+    }
+    #landing .hero a:hover, #landing .hero button:hover {
+      border-color: #00ff41 !important; color: #ffffff !important; background: #192026 !important;
+    }
+    #landing .hero .atak-primary-btn {
+      background: #ff9900 !important; background-color: #ff9900 !important;
+      color: #090a0b !important; border-color: #ff9900 !important; padding: 0 26px !important;
+    }
+    #landing .hero .atak-primary-btn:hover {
+      background: #ffaa2b !important; color: #050607 !important; border-color: #ffcc66 !important;
+    }
+  
+    #landing .hero div[style*="position: absolute"],
+    #landing .hero div[class*="drop"],
+    #landing .hero div[class*="menu"],
+    #landing .hero ul {
+      background: #0d1015 !important; border: 1px solid #2b382b !important; border-top: 2px solid #00ff41 !important;
+      border-radius: 2px !important; padding: 6px !important; box-shadow: 0 14px 34px rgba(0, 0, 0, 0.95) !important;
+    }
+    #landing .hero div[style*="position: absolute"] a,
+    #landing .hero div[style*="position: absolute"] button,
+    #landing .hero div[class*="drop"] a,
+    #landing .hero div[class*="menu"] a {
+      width: 100% !important; margin: 3px 0 !important; height: 34px !important;
+      background: #13171c !important; border: 1px solid rgba(255, 255, 255, 0.12) !important; color: #e2e8f0 !important;
+    }
+    #landing .hero div[style*="position: absolute"] a:hover,
+    #landing .hero div[class*="drop"] a:hover {
+      border-color: #00ff41 !important; color: #00ff41 !important; background: #182018 !important;
+    }
+    #landing nav, #landing footer, #landing .foot { position: fixed !important; left: 22px !important; bottom: 16px !important; font-family: monospace !important; font-size: 11px !important; z-index: 12 !important; }
+    #landing .updated { position: fixed !important; right: 22px !important; bottom: 16px !important; font-family: monospace !important; color: #64748b !important; font-size: 11px !important; z-index: 12 !important; }
 
-#landing > *:not(.hero):not(nav):not(footer):not(.foot):not(.updated):not(#atak-topo-bg) {
-
-
-    display: none !important;
-  }
-  #landing .hero img:not(.avatar),
-  #landing .hero .poppy,
-  #landing .hero [class*="flower"],
-  #landing .hero [class*="badge"],
-  #landing .chat,
-  #landing [class*="chat"],
-  #landing [class*="bubble"] {
-    display: none !important;
-  }
-
-  #landing .hero {
-    position: relative !important;
-    top: auto !important; left: auto !important; transform: none !important;
-    height: auto !important; min-height: 0 !important;
-    width: 630px !important; max-width: calc(100vw - 32px) !important;
-    background: rgba(11, 13, 15, 0.88) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 3px !important;
-    padding: 36px 42px !important;
-    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.9) !important;
-    margin: 0 !important;
-    z-index: 10 !important;
-  }
-
-  #landing .hero::before {
-    content: "RO-TAK [ENHANCED]  //  SQUAD TACTICAL MAPPING & PLANNING  ·  v0.8.2-BETA";
-    display: block;
-    font-family: monospace !important;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: #94a3b8;
-    letter-spacing: 1.3px;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  #landing .hero::after {
-    content: "TOOLS:  NATO SYMBOLS  ·  MGRS GRID  ·  RANGE & BEARING  ·  WAYPOINTS & ROUTES";
-    display: block;
-    font-family: monospace !important;
-    font-size: 10px;
-    font-weight: 600;
-    color: #7c8b99;
-    letter-spacing: 1px;
-    margin-top: 26px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-  }
-
-  #landing .avatar {
-    width: 56px !important;
-    height: 56px !important;
-    border-radius: 3px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
-    margin-bottom: 18px !important;
-  }
-
-  #landing .hero h1 {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
-    font-size: 40px !important;
-    font-weight: 800 !important;
-    line-height: 1.1 !important;
-    letter-spacing: -0.8px !important;
-    color: #f8fafc !important;
-    margin: 0 0 26px 0 !important;
-    text-transform: uppercase !important;
-  }
-
-  #landing .hero a,
-  #landing .hero button {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 40px !important;
-    padding: 0 18px !important;
-    margin: 4px 8px 4px 0 !important;
-    border-radius: 2px !important;
-    font-family: monospace !important;
-    font-size: 11.5px !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.1px !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    color: #cbd5e1 !important;
-    transition: all 0.15s ease !important;
-  }
-
-  #landing .hero a:hover,
-  #landing .hero button:hover {
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    background: rgba(255, 255, 255, 0.09) !important;
-    color: #ffffff !important;
-  }
-
-  /* Solo el botón ENTER en ámbar táctico */
-  #landing .hero .enter,
-  #landing .hero a.enter,
-  #landing .hero button.enter {
-    background: #ff9900 !important;
-    color: #090a0b !important;
-    border-color: #ff9900 !important;
-    padding: 0 26px !important;
-    box-shadow: 0 0 20px rgba(255, 153, 0, 0.28) !important;
-  }
-
-  #landing .hero .enter:hover,
-  #landing .hero a.enter:hover,
-  #landing .hero button.enter:hover {
-    background: #ffad33 !important;
-    border-color: #ffad33 !important;
-    box-shadow: 0 0 28px rgba(255, 153, 0, 0.5) !important;
-    transform: translateY(-1px) !important;
-  }
-
-  /* Pie de página minimalista: solo Privacy policy y Terms of service */
-  #landing nav,
-  #landing footer,
-  #landing .foot {
-    position: fixed !important;
-    left: 22px !important;
-    bottom: 16px !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    font-family: monospace !important;
-    color: #64748b !important;
-    font-size: 11px !important;
-    background: transparent !important;
-    border: 0 !important;
-    z-index: 12 !important;
-  }
-  #landing nav a,
-  #landing footer a,
-  #landing .foot a {
-    background: transparent !important;
-    border: 0 !important;
-    color: #64748b !important;
-    padding: 2px 12px 2px 0 !important;
-  }
-  #landing nav a:hover,
-  #landing footer a:hover,
-  #landing .foot a:hover {
-    color: #e2e8f0 !important;
-  }
-  /* Oculta Introduction y My Projects */
-  #landing nav a:nth-child(n+3),
-  #landing footer a:nth-child(n+3),
-  #landing .foot a:nth-child(n+3) {
-    display: none !important;
-  }
-  #landing .updated {
-    position: fixed !important;
-    right: 22px !important;
-    bottom: 16px !important;
-    font-family: monospace !important;
-    color: #64748b !important;
-    font-size: 11px !important;
-    z-index: 12 !important;
-  }
   /* === TUTORIAL TÁCTICO ESTILO ATAK (#tut) === */
   #tut {
     border-radius: 2px !important;
@@ -4926,7 +5216,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   });
   stage.addEventListener('wheel', function() { setTimeout(updateScaleDisplay, 20); }, { passive: true });
   setTimeout(updateScaleDisplay, 500);
-
+      
   const RADIAL_IDS = Array.of('b-sym', 'b-wp', 'b-meas', 'b-ping', 'b-draw', 'b-text', 'b-eraser', 'b-pan');
   let rDown = null;
 
@@ -4972,62 +5262,280 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   document.addEventListener('pointerdown', function(e) {
     if (e.button === 0 && !radial.contains(e.target)) radial.classList.remove('open');
   });
+    
+    function injectCalibIOButtons() {
+    if (!document.getElementById('atak-marks-row')) {
+      let bExp = null, bImp = null;
+      document.querySelectorAll('#menu button').forEach(function(el) {
+        const t = (el.textContent || '').trim().toLowerCase();
+        if (t === 'export marks') bExp = el;
+        if (t === 'import marks') bImp = el;
+      });
+      if (bExp && bImp && bExp.parentNode === bImp.parentNode) {
+        const row = document.createElement('div');
+        row.id = 'atak-marks-row';
+        row.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;';
+        bExp.style.setProperty('width', '100%', 'important');
+        bImp.style.setProperty('width', '100%', 'important');
+        bImp.classList.add('alt');
+        bExp.before(row);
+        row.append(bExp, bImp);
+      }
+    }
+
+    const gridSec = document.getElementById('gridsec');
+    if (!gridSec || document.getElementById('atak-exp-cal')) return;
+
+    const btnExp = document.createElement('button');
+    btnExp.id = 'atak-exp-cal';
+    btnExp.type = 'button';
+    btnExp.textContent = 'Export grid/m';
+    btnExp.onclick = function() {
+      const hasGrid = typeof grid !== 'undefined' && grid;
+      if (!hasGrid && !metersPerPx) {
+        if (typeof toast === 'function') toast('Nothing to export (calibrate grid or meters first)');
+        return;
+      }
+      const payload = {
+        type: 'ROTAK_ATAK_CALIBRATION',
+        version: 1,
+        grid: hasGrid ? grid : null,
+        metersPerPx: metersPerPx || 0
+      };
+      const blob = new Blob(Array.of(JSON.stringify(payload, null, 2)), { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'rotak-calibration.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      if (typeof toast === 'function') toast('Calibration exported (rotak-calibration.json)');
+    };
+
+    const fileInp = document.createElement('input');
+    fileInp.type = 'file';
+    fileInp.accept = '.json,application/json';
+    fileInp.style.display = 'none';
+    fileInp.onchange = function(e) {
+      const f = e.target.files && e.target.files.item(0);
+      if (!f) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (data.type !== 'ROTAK_ATAK_CALIBRATION') {
+            if (typeof toast === 'function') toast('Invalid calibration file');
+            return;
+          }
+          if (data.grid) {
+            grid = data.grid;
+            localStorage.setItem('atak-saved-grid', JSON.stringify(grid));
+            if (typeof updGridUI === 'function') updGridUI();
+          }
+          if (typeof data.metersPerPx === 'number' && data.metersPerPx > 0) {
+            metersPerPx = data.metersPerPx;
+            localStorage.setItem('atak-mpp', String(metersPerPx));
+            updateScaleDisplay();
+          }
+          if (typeof draw === 'function') draw();
+          if (typeof toast === 'function') toast('Grid & meters imported');
+        } catch (_) {
+          if (typeof toast === 'function') toast('Error reading JSON file');
+        }
+        fileInp.value = '';
+      };
+      reader.readAsText(f);
+    };
+
+    const btnImp = document.createElement('button');
+    btnImp.id = 'atak-imp-cal';
+    btnImp.type = 'button';
+    btnImp.className = 'alt';
+    btnImp.textContent = 'Import grid/m';
+    btnImp.onclick = function() {
+      if (typeof img === 'undefined' || !img) {
+        if (typeof toast === 'function') toast('Open a map first');
+        return;
+      }
+      fileInp.click();
+    };
+
+    const clrMBtn = document.getElementById('atak-clr-m-btn') || gridSec.lastElementChild;
+    if (clrMBtn) {
+      clrMBtn.after(btnExp, btnImp, fileInp);
+    } else {
+      gridSec.append(btnExp, btnImp, fileInp);
+    }
+  }
+
+  injectCalibIOButtons();
+  const mBtnIO = document.getElementById('menuBtn');
+  if (mBtnIO) mBtnIO.addEventListener('click', injectCalibIOButtons);
+  // === COPIAR COORDENADAS CON CTRL + CLIC ===
+  stage.addEventListener('pointerdown', function(e) {
+    if (!e.ctrlKey || e.button !== 0) return;
+    e.stopImmediatePropagation();
+    e.preventDefault();
+
+    if (typeof grid === 'undefined' || !grid || typeof img === 'undefined' || !img) {
+      if (typeof toast === 'function') toast('Calibrate grid first to copy MGRS');
+      return;
+    }
+
+    const pt = world(e);
+    const g = toGrid(pt);
+    const coord8 = fmt8(g);
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(coord8).catch(function() {});
+    } else {
+      const tmp = document.createElement('textarea');
+      tmp.value = coord8;
+      tmp.style.position = 'fixed';
+      tmp.style.opacity = '0';
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      tmp.remove();
+    }
+
+    if (typeof toast === 'function') toast('MGRS COPIED: ' + coord8);
+  }, true);
+
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { radial.classList.remove('open'); scaleCalib = null; updateScaleDisplay(); }
+    if (e.key === 'Escape') {
+      radial.classList.remove('open');
+      scaleCalib = null;
+      measOrigin = null;
+      measTag.style.display = 'none';
+      updateScaleDisplay();
+    }
+ 
   });
       document.querySelectorAll('#landing *').forEach(function(el) {
     if (el.children.length === 0 && el.textContent && el.textContent.includes('Updated')) {
-      el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;">ZIKAM\'S OVERHAUL</span> <span style="color:#475569;margin:0 6px;">|</span> Updated on November 16th 2026';
+      el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;"></span> <span style="color:#475569;margin:0 6px;">|</span> Updated on November 16th 2026';
     }
   });
-
-
-    
-  const landingEl = document.getElementById('landing');
-  if (landingEl) {
-    
-    let bgDiv = document.getElementById('atak-topo-bg');
-    if (!bgDiv) {
-      bgDiv = document.createElement('div');
+      const landingEl = document.getElementById('landing');
+    if (landingEl) {
+      const bgDiv = document.createElement('div');
       bgDiv.id = 'atak-topo-bg';
+      bgDiv.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;background:#07090b;overflow:hidden;';
+      bgDiv.innerHTML = '<div id="atak-bg-layer" style="position:absolute;inset:0;background:url(\'./images/bg-tactical.png\') center/cover no-repeat;opacity:0;transform:scale(1.03);transition:opacity 1.8s cubic-bezier(0.22,1,0.36,1),transform 2.4s ease-out;"></div><div style="position:absolute;inset:0;background:radial-gradient(circle at 35% 35%,rgba(7,9,11,0.25) 0%,rgba(5,7,9,0.86) 88%);"></div>';
       landingEl.prepend(bgDiv);
-    }
-    bgDiv.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;background:#07090b;overflow:hidden;';
-    bgDiv.innerHTML = `
-      <div style="position:absolute;inset:0;background:url('./images/bg-tactical.png') center/cover no-repeat;opacity:0.80;filter:contrast(1.1) saturate(1.15);"></div>
-      <div style="position:absolute;inset:0;background:radial-gradient(circle at 35% 35%, rgba(7,9,11,0.25) 0%, rgba(5,7,9,0.86) 88%);"></div>
-    `;
+      setTimeout(function() {
+        const l = document.getElementById('atak-bg-layer');
+        if (l) { l.style.opacity = '0.80'; l.style.transform = 'scale(1)'; }
+      }, 80);
 
-    
-    const heroH1 = landingEl.querySelector('.hero h1');
-    if (heroH1) {
-      heroH1.innerHTML = `
-        <div style="font-size:38px;font-weight:900;letter-spacing:-0.5px;color:#f8fafc;line-height:1.05;white-space:nowrap;">BANANA'S RO-TAK</div>
-        <div style="display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:6px 14px;background:linear-gradient(90deg, rgba(255,153,0,0.22) 0%, rgba(0,255,65,0.14) 100%);border:1px solid rgba(255,153,0,0.6);border-left:3px solid #ff9900;border-radius:2px;font-family:monospace;font-size:11.5px;font-weight:800;letter-spacing:1.4px;color:#ffb84d;white-space:nowrap;">
-          <span> RO-TAK TACTICAL OVERHAUL</span>
-          <span style="color:#00ff41;font-size:10.5px;border-left:1px solid rgba(255,255,255,0.22);padding-left:10px;">FULL UI OVERHAUL + NEW MECHANICS</span>
-        </div>
-        <div style="margin-top:14px;font-family:monospace;font-size:11px;font-weight:500;letter-spacing:0.3px;color:#94a3b8;line-height:1.5;text-transform:none;">
-          Complete C2 interface featuring a right-click Radial Menu and real-time MGRS / HDG / RNG telemetry.
-        </div>
-      `;
-    }
+      const heroBox = landingEl.querySelector('.hero');
+      const DISCORD_AVATAR = './images/discord-avatar.png';
+      const DISCORD_USER   = '@zikaalm';
 
-    
-    landingEl.querySelectorAll('a, button, span').forEach(function(el) {
-      const txt = (el.textContent || '').trim().toLowerCase();
-      if (txt === 'introduction' || txt === 'my projects') {
-        el.style.setProperty('display', 'none', 'important');
+      if (heroBox && !document.getElementById('atak-hero-top')) {
+        const topBar = document.createElement('div');
+        topBar.id = 'atak-hero-top';
+        topBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:monospace;font-size:10.5px;font-weight:600;color:#94a3b8;letter-spacing:1.1px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);white-space:nowrap;';
+        topBar.innerHTML = '<div>RO-TAK <span style="color:#00ff41;font-weight:800;text-shadow:0 0 8px rgba(0,255,65,0.45);background:transparent;">[ENHANCED]</span>  //  SQUAD TACTICAL MAPPING &amp; PLANNING  ·  v0.8.9b</div>';
+        heroBox.prepend(topBar);
       }
-      if (txt.includes('download') || txt.includes('github')) {
-        el.style.setProperty('background', 'rgba(15, 19, 24, 0.85)', 'important');
-        el.style.setProperty('color', '#cbd5e1', 'important');
-        el.style.setProperty('border-color', 'rgba(255, 255, 255, 0.18)', 'important');
-        el.style.setProperty('box-shadow', 'none', 'important');
+
+      if (heroBox && !heroBox.querySelector('.atak-avatars-row')) {
+        const origAv = heroBox.querySelector('.avatar');
+        if (origAv) {
+          const avRow = document.createElement('div');
+          avRow.className = 'atak-avatars-row';
+          origAv.before(avRow);
+          avRow.appendChild(origAv);
+
+          const modCard = document.createElement('div');
+          modCard.id = 'atak-mod-card';
+          modCard.style.cssText = 'display:inline-flex;align-items:center;gap:11px;padding:6px 14px 6px 6px;border:1px solid rgba(217,38,38,0.55);border-left:3px solid #ef4444;border-radius:2px;';
+          modCard.innerHTML =
+            '<div style="width:44px;height:44px;border-radius:2px;border:1px solid #ef4444;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">' +
+              '<img id="atak-discord-pfp" src="' + DISCORD_AVATAR + '" alt="Zikam" data-try="0" onerror="if(this.dataset.try===\'0\'){this.dataset.try=\'1\';this.src=\'./images/discord-avatar.jpg\';}else if(this.dataset.try===\'1\'){this.dataset.try=\'2\';this.src=\'./images/discord-avatar.webp\';}else{this.remove();}" style="width:100%;height:100%;object-fit:cover;display:block;">' +
+            '</div>' +
+            '<div style="display:flex;flex-direction:column;gap:2px;font-family:monospace;line-height:1.25;">' +
+              '<div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;color:#94a3b8;">OVERHAUL BY</div>' +
+              '<div style="font-size:12.5px;font-weight:800;letter-spacing:0.6px;color:#ef4444;">' + DISCORD_USER + '</div>' +
+              '<div style="font-size:9px;font-weight:600;letter-spacing:1px;color:#fca5a5;">DISCORD CONTACT</div>' +
+            '</div>';
+          avRow.appendChild(modCard);
+        }
       }
-    });
-  }
-    
+
+      const heroH1 = landingEl.querySelector('.hero h1');
+      if (heroH1) {
+        heroH1.innerHTML = '<div style="font-size:38px;font-weight:900;letter-spacing:-0.5px;color:#f8fafc;line-height:1.05;white-space:nowrap;">BANANA\'S RO-TAK</div><div style="display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:6px 14px;background:linear-gradient(90deg,rgba(255,153,0,0.22) 0%,rgba(0,255,65,0.14) 100%);border:1px solid rgba(255,153,0,0.6);border-left:3px solid #ff9900;border-radius:2px;font-family:monospace;font-size:11.5px;font-weight:800;letter-spacing:1.4px;color:#ffb84d;white-space:nowrap;"><span>RO-TAK ENHANCED</span><span style="color:#00ff41;font-size:10.5px;border-left:1px solid rgba(255,255,255,0.22);padding-left:10px;">FULL UI OVERHAUL + NEW MECHANICS</span></div>';
+        if (!heroBox.querySelector('.atak-hero-desc')) {
+          const desc = document.createElement('p');
+          desc.className = 'atak-hero-desc';
+          desc.textContent = 'Complete C2 interface featuring a right-click Radial Menu, guided 9-Line MEDEVAC/CAS forms, and real-time MGRS / HDG / RNG telemetry.';
+          heroH1.after(desc);
+        }
+      }
+
+      const lghBtn = document.getElementById('lgh');
+      if (lghBtn) {
+        const oldPop = document.getElementById('atak-gh-pop');
+        if (oldPop) oldPop.remove();
+
+        const pop = document.createElement('div');
+        pop.id = 'atak-gh-pop';
+        pop.style.cssText = 'display:none;position:fixed;min-width:245px;background:#0d1015;border:1px solid #ef4444;border-top:2px solid #ef4444;border-radius:2px;padding:6px;z-index:99999;box-shadow:0 14px 34px rgba(0,0,0,0.95);flex-direction:column;gap:5px;font-family:monospace;';
+
+        const optMod = document.createElement('button');
+        optMod.type = 'button';
+        optMod.style.cssText = 'display:flex;align-items:center;justify-content:space-between;width:100%;height:36px;padding:0 12px;background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.55);border-radius:2px;color:#ffffff;font:700 10.5px monospace;letter-spacing:0.8px;cursor:pointer;white-space:nowrap;';
+        optMod.innerHTML = '<span>ZIKAM\'S OVERHAUL</span><span style="color:#ef4444;">[OVERHAUL] ↗</span>';
+        optMod.onclick = function() {
+          pop.style.display = 'none';
+          window.open('https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul', '_blank', 'noopener');
+        };
+
+        const optBase = document.createElement('button');
+        optBase.type = 'button';
+        optBase.style.cssText = 'display:flex;align-items:center;justify-content:space-between;width:100%;height:36px;padding:0 12px;background:#13171c;border:1px solid rgba(255,255,255,0.16);border-radius:2px;color:#cbd5e1;font:700 10.5px monospace;letter-spacing:0.8px;cursor:pointer;white-space:nowrap;';
+        optBase.innerHTML = '<span>ORIGINAL RO-TAK</span><span style="color:#94a3b8;">[BASE] ↗</span>';
+        optBase.onclick = function() {
+          pop.style.display = 'none';
+          window.open('https://github.com/rice-evans/RO-TAK', '_blank', 'noopener');
+        };
+
+        pop.append(optMod, optBase);
+        document.body.appendChild(pop);
+
+        lghBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (pop.style.display === 'flex') { pop.style.display = 'none'; return; }
+          const rect = lghBtn.getBoundingClientRect();
+          pop.style.left = rect.left + 'px';
+          pop.style.top  = (rect.bottom + 6) + 'px';
+          pop.style.display = 'flex';
+        });
+
+        document.addEventListener('click', function(ev) {
+          if (!pop.contains(ev.target) && !lghBtn.contains(ev.target)) pop.style.display = 'none';
+        });
+      }
+
+      document.querySelectorAll('#landing a, #landing button, #landing span, #landing div').forEach(function(el) {
+        const txt = (el.textContent || '').trim().toLowerCase();
+        if (el.children.length === 0 && (txt === 'introduction' || txt === 'my projects')) {
+          el.style.setProperty('display', 'none', 'important');
+        }
+      });
+
+      document.querySelectorAll('#landing *').forEach(function(el) {
+        if (el.children.length === 0 && el.textContent && el.textContent.includes('Updated')) {
+          el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;">ZIKAM\'S OVERHAUL</span> <span style="color:#475569;margin:0 6px;">|</span> v0.8.9b';
+        }
+      });
+    }
+  
+
   if (!document.getElementById('atak-tut')) {
     const aTut = document.createElement('div');
     aTut.id = 'atak-tut';
@@ -5044,22 +5552,22 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     `;
     document.body.appendChild(aTut);
 
-    const atakSteps = [
+        const atakSteps = [
       {
         t: '01 // TOP ACTION BAR',
-        b: 'Select tactical tools on the top right Action Bar, then draw or place marks on the map. The shield places NATO unit symbols and the pin places waypoints.'
+        b: 'Select tactical tools on the top-right Action Bar, then draw or place marks on the map. The shield places NATO unit symbols and the pin places waypoints.'
       },
       {
         t: '02 // ATAK RADIAL MENU',
         b: 'Right-click anywhere on the map (without dragging) to deploy the circular ATAK Radial Menu for instant tool switching. Right-click and drag to pan.'
       },
       {
-        t: '03 // LIVE TELEMETRY & SCALE',
-        b: 'Monitor real-time MGRS coordinates, target bearing (HDG), and range (RNG) in the bottom-right HUD. Calibrate real meters in Menu > Grid Coordinates.'
+        t: '03 // TELEMETRY, SCALE & MGRS COPY',
+        b: 'Monitor live MGRS, heading (HDG), and range (RNG) in the bottom-right HUD. Calibrate meters in Menu > Grid Coordinates, and Ctrl+Click any spot to copy its 8-digit MGRS.'
       },
       {
-        t: '04 // GRID & OVERLAY SYNC',
-        b: 'Open the top-right drawer (≡) to calibrate map grids, import/export tactical overlays, or enter a Room Code to share your map live with your squad.'
+        t: '04 // RANGE COMPASS & SYNC',
+        b: 'Use the Compass tool to measure bearing, MGRS, and real distance in meters. Open the top-right drawer (≡) to export/import calibrations or share a live Room Code.'
       }
     ];
 
@@ -5119,6 +5627,521 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
         }, true);
       }
     });
+  }
+ const bindsBox = document.getElementById('binds');
+  if (bindsBox) {
+    const atakBinds = [
+      ['ATAK Radial Menu', 'Right-click'],
+      ['Copy MGRS grid', 'Ctrl + Click'],
+      ['Measure bearing & dist', 'Compass + drag'],
+      ['Undo last action', 'Ctrl + Z'],
+      ['Paste map image', 'Ctrl + V'],
+      ['Move / scale item', 'Move tool + click'],
+      ['Ping squad', 'Ping tool + click'],
+      ['Zoom / Rotate map', 'Scroll / Alt+Scroll'],
+      ['North up', 'Click compass'],
+      ['Pan map', 'Right / middle drag'],
+      ['Close menus / cancel', 'Esc']
+    ];
+    bindsBox.innerHTML = '';
+    atakBinds.forEach(function(pair) {
+      const row = document.createElement('div');
+      row.innerHTML = '<span>' + pair.at(0) + '</span><b>' + pair.at(1) + '</b>';
+      bindsBox.appendChild(row);
+    });
+  }
+      // === MODO DIDÁCTICO Y FORMATO LIMPIO PARA PANEL 9-LINE ===
+  const NL_HINTS = {
+    m: {
+      intro: 'MEDEVAC 9-LINE: Request medical helicopter evacuation. Fill out the active lines and click COPY to paste into squad chat.',
+      lines: [
+        '8-digit MGRS grid of the Landing Zone (LZ). Tap the crosshair icon to pick directly on the map.',
+        'Radio frequency & your squad callsign so the pilot can contact you.',
+        'Patient count by urgency: A = Critical/Life-threatening, B = Urgent surgery, C = Priority, D = Routine.',
+        'Special equipment required on the aircraft (Hoist = winch/rope, Extraction = jungle penetrator).',
+        'Patient count by mobility: L = Litter (stretcher/cannot walk), A = Ambulatory (walking wounded).',
+        'Enemy threat at the LZ: N = No enemy, P = Possible enemy, E = Enemy in area (caution), X = Hot LZ (armed escort needed).',
+        'How you will mark the LZ for the pilot (Panels, Flare/Pyro, Colored Smoke, or None).',
+        'Nationality and status of patients (Friendly military, Civilian, Allied forces, or Enemy Prisoner).',
+        'CBRN contamination at the LZ (Chemical, Biological, Radiological, Nuclear, or None).'
+      ]
+    },
+    c: {
+      intro: 'CAS 9-LINE: Request Close Air Support (airstrike / gun run) on a target. Fill the lines and click COPY to send to pilots.',
+      lines: [
+        'Type 1 = Visual on both target & aircraft | Type 2 = Visual on target OR aircraft | Type 3 = Area engagement.',
+        'Initial Point / Battle Position: Landmark or MGRS grid where the aircraft starts its attack run.',
+        'Compass heading (degrees) from the IP to the target, plus Left/Right offset if needed.',
+        'Distance from the Initial Point (IP) to the target (in Nautical Miles or meters).',
+        'Target elevation above sea level (e.g., 120 FT or 40 M).',
+        'Brief description of the target (e.g., "Enemy BTR behind red warehouse", "Mortar position").',
+        'Exact 8-digit MGRS grid of the target. Tap the crosshair icon to pick directly on the map.',
+        'How the target is marked (Laser, Smoke color, IR strobe, or None). The 4-digit number (e.g. 1688, range 1111-1788) is the Laser Code that syncs your designator with the aircraft\'s guided bomb/missile.',
+        'Direction and distance of the closest friendly troops from the target (e.g., "SOUTH 300M").',
+        'Safe compass direction for the aircraft to exit after firing (away from enemy anti-air).',
+        'Additional remarks: enemy AA threats, final attack heading restrictions, or cleared hot status.'
+      ]
+    },
+    n: {
+      intro: 'MISSION SCRATCHPAD: Free-form tactical notes, frequencies, callsigns, and objectives. Saved automatically in your browser.'
+    }
+  };
+
+  function enhance9LineDidactic() {
+    const nlBody = document.getElementById('nlBody');
+    const activeTabBtn = document.querySelector('#nlTabs button.on');
+    if (!nlBody || !activeTabBtn) return;
+
+    const tabKey = activeTabBtn.dataset.t || 'm';
+    const guide = NL_HINTS[tabKey];
+    if (!guide) return;
+
+    if (!nlBody.querySelector('.atak-nl-intro')) {
+      const banner = document.createElement('div');
+      banner.className = 'atak-nl-intro';
+      banner.style.cssText = 'margin:0 0 8px 0;padding:8px 10px;background:rgba(0,255,65,0.08);border:1px solid rgba(0,255,65,0.35);border-left:3px solid #00ff41;border-radius:2px;font-size:10.5px;line-height:1.45;color:#cbd5e1;';
+      banner.textContent = guide.intro;
+      nlBody.prepend(banner);
+    }
+
+    if (guide.lines) {
+      const rows = nlBody.querySelectorAll('.nlr');
+      rows.forEach(function(row, idx) {
+        if (!row.querySelector('.nlr-head')) {
+          const badge = row.querySelector(':scope > b');
+          const title = row.querySelector(':scope > span');
+          if (badge && title) {
+            const head = document.createElement('div');
+            head.className = 'nlr-head';
+            badge.before(head);
+            head.append(badge, title);
+          }
+        }
+
+        const optBtns = row.querySelectorAll('.nlo, .nlc');
+        if (optBtns.length > 0 && !row.querySelector('.nlopts')) {
+          const wrap = document.createElement('div');
+          wrap.className = 'nlopts';
+          optBtns.item(0).before(wrap);
+          optBtns.forEach(function(btn) { wrap.appendChild(btn); });
+        }
+
+        const inp = row.querySelector('input[type="text"], input:not([type])');
+        const pk = row.querySelector('.nlpk');
+        if (inp && pk && !row.querySelector('.nl-inp-row')) {
+          const iRow = document.createElement('div');
+          iRow.className = 'nl-inp-row';
+          iRow.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:6px;width:100%;';
+          inp.before(iRow);
+          iRow.append(inp, pk);
+        }
+
+        if (!row.querySelector('.atak-nl-hint')) {
+          const hintText = guide.lines.at(idx);
+          const headEl = row.querySelector('.nlr-head');
+          if (hintText && headEl) {
+            const hint = document.createElement('div');
+            hint.className = 'atak-nl-hint';
+            hint.style.cssText = 'font-size:10px;line-height:1.4;color:#8a998a;margin:3px 0 6px 0;text-transform:none;letter-spacing:0;';
+            hint.textContent = hintText;
+            headEl.after(hint);
+          }
+        }
+      });
+    }
+
+        const noteArea = nlBody.querySelector('textarea.nlnotes');
+    if (noteArea && !nlBody.querySelector('.atak-notes-tools')) {
+      noteArea.placeholder = 'Write squad callsigns, radio frequencies, rally points, or mission objectives here...';
+
+      const toolsWrap = document.createElement('div');
+      toolsWrap.className = 'atak-notes-tools';
+      toolsWrap.style.cssText = 'display:flex;flex-direction:column;gap:8px;margin-top:8px;';
+
+      const tplRow = document.createElement('div');
+      tplRow.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:5px;';
+
+      const insertSnippet = function(txt) {
+        const cur = noteArea.value;
+        noteArea.value = cur ? (cur.endsWith('\n') ? cur + txt : cur + '\n' + txt) : txt;
+        noteArea.dispatchEvent(new Event('input', { bubbles: true }));
+        noteArea.focus();
+      };
+
+            const templates = [
+        {
+          label: '+ FREQS',
+          code: '=== COMMS PLAN (PACE) ===\nPRI FREQ: [   .  ]  |  ALT FREQ: [   .  ]\nCOMMAND : [   .  ]  |  AIR/CAS : [   .  ]\nMEDEVAC : [   .  ]  |  SQUAD   : [   .  ]\nCALLSIGN: [        ]'
+        },
+        { label: '+ OBJ', code: '=== OBJECTIVES ===\n[ ] PRIMARY: \n[ ] SECONDARY: \n[ ] EXFIL LZ: ' },
+        { label: '+ BRIEF', code: '=== OPORD BRIEF ===\n1. ENEMY: \n2. FRIENDLY: \n3. MISSION: \n4. EXECUTION: ' },
+
+        {
+          label: '+ MGRS',
+          action: function() {
+            if (typeof grid === 'undefined' || !grid || typeof img === 'undefined' || !img || typeof toWorld !== 'function') {
+              if (typeof toast === 'function') toast('Calibrate grid first');
+              return;
+            }
+            const r = c.getBoundingClientRect();
+            const centerGrid = fmt8(toGrid(toWorld(r.width / 2, r.height / 2)));
+            insertSnippet('GRID: ' + centerGrid);
+          }
+        }
+      ];
+
+      templates.forEach(function(item) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'nlo';
+        b.textContent = item.label;
+        b.style.cssText = 'padding:5px 4px;font-size:10px;font-weight:700;';
+        b.onclick = item.action ? item.action : function() { insertSnippet(item.code); };
+        tplRow.appendChild(b);
+      });
+
+      const counterBar = document.createElement('div');
+      counterBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:#0d100d;border:1px solid #222b22;border-radius:2px;font-size:10px;color:#8a998a;';
+
+      const countTxt = document.createElement('span');
+      const modeBtn = document.createElement('button');
+      modeBtn.type = 'button';
+      modeBtn.style.cssText = 'background:#141814;border:1px solid #2c382c;border-radius:2px;color:#00ff41;font:700 9.5px monospace;padding:2px 6px;cursor:pointer;';
+
+      let isNitro = localStorage.getItem('atak-dc-nitro') === '1';
+
+      const updateCounter = function() {
+        const len = noteArea.value.length;
+        const limit = isNitro ? 4000 : 2000;
+        modeBtn.textContent = isNitro ? 'NITRO (4K)' : 'DISCORD (2K)';
+        countTxt.textContent = 'CHARS: ' + len + ' / ' + limit;
+        if (len > limit) {
+          countTxt.style.color = '#ff4d4d';
+        } else if (len > limit * 0.85) {
+          countTxt.style.color = '#ff9900';
+        } else {
+          countTxt.style.color = '#00ff41';
+        }
+      };
+
+      modeBtn.onclick = function() {
+        isNitro = !isNitro;
+        localStorage.setItem('atak-dc-nitro', isNitro ? '1' : '0');
+        updateCounter();
+      };
+
+      noteArea.addEventListener('input', updateCounter);
+      updateCounter();
+
+      counterBar.append(countTxt, modeBtn);
+      toolsWrap.append(tplRow, counterBar);
+      noteArea.after(toolsWrap);
+    }
+
+  }
+
+  const nlContainer = document.getElementById('nl');
+  if (nlContainer) {
+    const nlObs = new MutationObserver(function() {
+      enhance9LineDidactic();
+    });
+    const nlBodyEl = document.getElementById('nlBody');
+    if (nlBodyEl) nlObs.observe(nlBodyEl, { childList: true });
+    nlContainer.addEventListener('click', function() { setTimeout(enhance9LineDidactic, 15); });
+    setTimeout(enhance9LineDidactic, 100);
+  }
+  const lghBtn = document.getElementById('lgh');
+  if (lghBtn && !document.getElementById('atak-gh-pop')) {
+    const pop = document.createElement('div');
+    pop.id = 'atak-gh-pop';
+    pop.style.cssText = 'display:none;position:fixed;min-width:245px;background:#0d1015;border:1px solid #ef4444;border-top:2px solid #ef4444;border-radius:2px;padding:6px;z-index:99999;box-shadow:0 14px 34px rgba(0,0,0,0.95);flex-direction:column;gap:5px;font-family:monospace;';
+    pop.innerHTML =
+      '<a href="https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 12px;background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.55);border-radius:2px;color:#ffffff;font:700 10.5px monospace;letter-spacing:0.8px;text-decoration:none;white-space:nowrap;">' +
+        '<span>ZIKAM\'S OVERHAUL</span><span style="color:#ef4444;">[OVERHAUL] ↗</span>' +
+      '</a>' +
+      '<a href="https://github.com/rice-evans/RO-TAK" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 12px;background:#13171c;border:1px solid rgba(255,255,255,0.16);border-radius:2px;color:#cbd5e1;font:700 10.5px monospace;letter-spacing:0.8px;text-decoration:none;white-space:nowrap;">' +
+        '<span>ORIGINAL RO-TAK</span><span style="color:#94a3b8;">[BASE] ↗</span>' +
+      '</a>';
+    document.body.appendChild(pop);
+
+    lghBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (pop.style.display === 'flex') { pop.style.display = 'none'; return; }
+      const rect = lghBtn.getBoundingClientRect();
+      pop.style.left = rect.left + 'px';
+      pop.style.top  = (rect.bottom + 6) + 'px';
+      pop.style.display = 'flex';
+    });
+
+    document.addEventListener('click', function(ev) {
+      if (!pop.contains(ev.target) && !lghBtn.contains(ev.target)) pop.style.display = 'none';
+    });
+  }
+  const PRESET_MAPS = [
+    { name: 'SAWANG',   path: './images/SawangFull.png' },
+    { name: 'RONOGRAD',      path: './images/Rono16k.png' }
+  ];
+
+  const menuEl = document.getElementById('menu');
+  const gridSecEl = document.getElementById('gridsec');
+  if (menuEl && gridSecEl && !document.getElementById('atak-maps-sec')) {
+    menuEl.querySelectorAll('button').forEach(function(b) {
+      if ((b.textContent || '').trim().toUpperCase() === 'BRM5 MAPS') {
+        b.style.display = 'none';
+      }
+    });
+
+    const mapBox = document.createElement('div');
+    mapBox.id = 'atak-maps-sec';
+    mapBox.style.cssText = 'display:grid;grid-template-columns:1fr 72px;gap:6px;border-top:1px solid #2b382b;padding-top:8px;';
+
+    const sh = document.createElement('div');
+    sh.className = 'sh';
+    sh.style.gridColumn = '1 / -1';
+    sh.textContent = 'TACTICAL MAPS (NATIVE RES)';
+
+    const selMap = document.createElement('select');
+    selMap.style.cssText = 'height:24px;background:#141814;border:1px solid #2c382c;border-radius:2px;color:#00ff41;font:700 10.5px monospace;padding:0 6px;outline:none;';
+    PRESET_MAPS.forEach(function(m) {
+      const opt = document.createElement('option');
+      opt.value = m.path;
+      opt.textContent = m.name;
+      selMap.appendChild(opt);
+    });
+
+    const btnLoadPreset = document.createElement('button');
+    btnLoadPreset.type = 'button';
+    btnLoadPreset.textContent = 'LOAD';
+    btnLoadPreset.onclick = function() {
+      if (typeof hostOnly === 'function' && hostOnly()) {
+        if (typeof toast === 'function') toast('Only the host can change maps');
+        return;
+      }
+      if (typeof setImg === 'function') {
+        setImg(selMap.value, { reset: true, fit: true }).then(function(ok) {
+          if (ok) {
+            if (typeof toast === 'function') toast('Loaded: ' + selMap.options[selMap.selectedIndex].text);
+            menuEl.classList.remove('open');
+          } else if (typeof toast === 'function') {
+            toast('File not found: ' + selMap.value);
+          }
+        });
+      }
+    };
+
+    const btnFile = document.createElement('button');
+    btnFile.type = 'button';
+    btnFile.className = 'alt';
+    btnFile.textContent = 'LOAD FROM PC';
+    btnFile.onclick = function() {
+      const fIn = document.getElementById('file');
+      if (fIn) fIn.click();
+    };
+
+    const btnAddMulti = document.createElement('button');
+    btnAddMulti.type = 'button';
+    btnAddMulti.className = 'alt';
+    btnAddMulti.textContent = '+ ADD MAP';
+    btnAddMulti.onclick = function() {
+      if (typeof openSide === 'function') {
+        menuEl.classList.remove('open');
+        openSide('mp');
+      }
+    };
+
+    mapBox.append(sh, selMap, btnLoadPreset, btnFile, btnAddMulti);
+    gridSecEl.before(mapBox);
+  }
+    // === SECCIÓN DE PRESETS INTEL PARA SAWANG [WIP] EN EL MENÚ (≡) ===
+  const menuContainer = document.getElementById('menu');
+  const gridSection   = document.getElementById('gridsec');
+
+  if (menuContainer && gridSection && !document.getElementById('atak-presets-sec')) {
+    const presetBox = document.createElement('div');
+    presetBox.id = 'atak-presets-sec';
+    presetBox.style.cssText = 'display:flex;flex-direction:column;gap:6px;border-top:1px solid #2b382b;padding-top:8px;';
+
+    const header = document.createElement('div');
+    header.className = 'sh';
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;';
+    header.innerHTML =
+      '<span>SAWANG INTEL PRESETS</span>' +
+      '<span style="background:rgba(255,153,0,0.18);border:1px solid #ff9900;color:#ff9900;padding:1px 6px;border-radius:2px;font-size:9px;font-weight:800;letter-spacing:0.8px;">WIP</span>';
+
+    const desc = document.createElement('div');
+    desc.style.cssText = 'font-size:10px;line-height:1.4;color:#8a998a;';
+    desc.textContent = 'One-click tactical overlays for Sawang Island (Mortars, VIPs, Objectives, AA sites & Enemy FOBs).';
+
+    const gridBtns = document.createElement('div');
+    gridBtns.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:5px;';
+
+    const PRESET_CATEGORIES = [
+      { id: 'mortars', label: 'MORTAR PITS' },
+      { id: 'vips',    label: 'HVT / VIPs' },
+      { id: 'obj',     label: 'OBJECTIVES' },
+      { id: 'aa',      label: 'AA / SAM SITES' },
+      { id: 'enemies', label: 'ENEMY FOBs' },
+      { id: 'all',     label: 'VEHICLES' }
+    ];
+
+    PRESET_CATEGORIES.forEach(function(cat) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'alt';
+      btn.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:0 8px;opacity:0.78;';
+      btn.innerHTML = '<span>' + cat.label + '</span><span style="color:#ff9900;font-size:9px;">WIP</span>';
+      btn.onclick = function() {
+        if (typeof toast === 'function') {
+          toast('[WIP] ' + cat.label + ' preset coordinates coming in next update');
+        }
+      };
+      gridBtns.appendChild(btn);
+    });
+
+    presetBox.append(header, desc, gridBtns);
+    gridSection.before(presetBox);
+  }
+  // === INDICADOR TÁCTICO DE CARGA ANIMADO (LOADING. / .. / ...) ===
+  const loadingHud = document.createElement('div');
+  loadingHud.id = 'atak-map-loading';
+  loadingHud.style.cssText = 'display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;background:rgba(9,11,9,0.96);border:1px solid #00ff41;border-top:2px solid #00ff41;border-radius:2px;padding:16px 28px;box-shadow:0 12px 40px rgba(0,0,0,0.92),0 0 20px rgba(0,255,65,0.2);font-family:monospace;text-align:center;pointer-events:none;';
+  loadingHud.innerHTML =
+    '<div id="atak-load-txt" style="color:#00ff41;font-size:15px;font-weight:800;letter-spacing:2px;">LOADING.</div>' +
+    '<div style="color:#94a3b8;font-size:10px;margin-top:6px;letter-spacing:1px;">DECODING NATIVE MAP TEXTURE</div>';
+  document.body.appendChild(loadingHud);
+
+  let loadAnimTimer = null;
+  window.showAtakLoading = function(show) {
+    const txtEl = document.getElementById('atak-load-txt');
+    if (show) {
+      let dots = 1;
+      if (txtEl) txtEl.textContent = 'LOADING.';
+      loadingHud.style.display = 'block';
+      clearInterval(loadAnimTimer);
+      loadAnimTimer = setInterval(function() {
+        dots = (dots % 3) + 1;
+        if (txtEl) txtEl.textContent = 'LOADING' + '.'.repeat(dots);
+      }, 320);
+    } else {
+      clearInterval(loadAnimTimer);
+      loadingHud.style.display = 'none';
+    }
+  };
+
+  // Enganchar automáticamente setImg y carga de archivos para mostrar LOADING...
+  if (typeof setImg === 'function' && !setImg._atakWrapped) {
+    const origSetImg = setImg;
+    setImg = function(src, opt) {
+      window.showAtakLoading(true);
+      return new Promise(function(resolve) {
+        requestAnimationFrame(function() {
+          setTimeout(function() {
+            origSetImg(src, opt).then(function(res) {
+              window.showAtakLoading(false);
+              resolve(res);
+            }).catch(function() {
+              window.showAtakLoading(false);
+              resolve(false);
+            });
+          }, 30);
+        });
+      });
+    };
+    setImg._atakWrapped = true;
+  }
+  // === MODO DIDÁCTICO VISIBLE Y AUTOMÁTICO PARA SÍMBOLOS NATO (#sympanel) ===
+  const SYM_FIELD_HINTS = {
+    'Standard': 'MIL-STD-2525D (US) or APP-6D (EU NATO).',
+    'Context': 'Reality = Live op | Exercise = Training.',
+    'Affiliation': 'Friend (Blue), Hostile (Red), Neutral (Green).',
+    'Symbol set': 'Domain: Land Unit, Air, Sea, Equipment.',
+    'Status': 'Present = Confirmed | Planned = Anticipated.',
+    'Headquarters / task force': 'Adds HQ flag staff or Task Force bracket.',
+    'Echelon / mobility': 'Unit size (Squad/Platoon) or vehicle wheels.',
+    'Modifier 1': 'Top badge (Airborne, Sniper, Anti-Tank).',
+    'Modifier 2': 'Bottom badge (Light, Heavy, Mountain).',
+    'Reinforced / reduced': '(+) = Reinforced | (-) = Reduced strength.',
+    'Stack': 'Stacks icons to show a group/platoon.',
+    'Colors': 'App colors = Classic | Light/Dark = Muted.'
+  };
+
+  const SYM_TEXT_GUIDE = {
+    'Unit name / designation': { ph: 'e.g. ALPHA 1-1', desc: 'Callsign or squad ID shown on map.' },
+    'Higher formation': { ph: 'e.g. 2ND BN', desc: 'Parent unit / battalion / command.' },
+    'Additional information': { ph: 'e.g. MOVING N', desc: 'Free tactical note around symbol.' },
+    'Type': { ph: 'e.g. BTR-82 / M4', desc: 'Vehicle model or weapon system.' },
+    'Staff comments': { ph: 'e.g. LOW AMMO', desc: 'Internal HQ / command remarks.' },
+    'Quantity': { ph: 'e.g. 4x PAX', desc: 'Number of troops or vehicles.' },
+    'Altitude / depth': { ph: 'e.g. 500 FT', desc: 'Flight altitude or dive depth.' },
+    'Speed': { ph: 'e.g. 45 KMH', desc: 'Movement speed of the unit.' },
+    'Direction (degrees)': { ph: '0 - 359', desc: 'Draws a heading arrow (0=N, 90=E).' },
+    'Date time group': { ph: 'e.g. 171030Z', desc: 'Timestamp of intel report.' },
+    'Location': { ph: 'e.g. 1234 5678', desc: 'MGRS grid text label on symbol.' },
+    'Combat effectiveness': { ph: 'e.g. GREEN / 85%', desc: 'Unit readiness / health status.' },
+    'Common identifier': { ph: 'e.g. HVT-01', desc: 'Target or track reference ID.' },
+    'Evaluation rating': { ph: 'e.g. B2', desc: 'Intel reliability score (A1-F6).' },
+    'IFF / SIF / AIS': { ph: 'e.g. MODE 3', desc: 'Transponder / Friend-or-Foe code.' },
+    'Signature equipment': { ph: 'e.g. RADAR', desc: 'Detectable electronic emission.' },
+    'Special headquarters': { ph: 'e.g. TOC / FOB', desc: 'Command post classification.' },
+    'Platform type': { ph: 'e.g. ROTARY', desc: 'Airframe or hull category.' },
+    'Guarded unit': { ph: 'e.g. CONVOY', desc: 'Unit being escorted or protected.' },
+    'Special designator': { ph: 'e.g. MEDEVAC', desc: 'Special mission role tag.' },
+    'Equipment teardown time': { ph: 'e.g. 10 MIN', desc: 'Time to pack up & move.' }
+  };
+
+  function enhanceSymPanelDidactic() {
+    const spEl = document.getElementById('sympanel');
+    if (!spEl || !spEl.querySelector('.sb-head')) return;
+
+    if (!spEl.querySelector('#atak-sym-guide')) {
+      const guideBox = document.createElement('div');
+      guideBox.id = 'atak-sym-guide';
+      guideBox.style.cssText = 'padding:8px;background:rgba(0,255,65,0.07);border:1px solid rgba(0,255,65,0.35);border-left:3px solid #00ff41;border-radius:2px;font-size:10px;line-height:1.4;color:#cbd5e1;';
+      guideBox.innerHTML = '<strong style="color:#00ff41;">HOW TO PLACE SYMBOLS:</strong> 1) Set Affiliation &amp; Unit type below. 2) Click anywhere on the map to deploy.';
+
+      const head = spEl.querySelector('.sb-head');
+      head.after(guideBox);
+    }
+
+    spEl.querySelectorAll('.sb-f').forEach(function(lbl) {
+      const span = lbl.querySelector('span');
+      if (!span || lbl.dataset.didacticDone) return;
+      lbl.dataset.didacticDone = '1';
+
+      const title = span.textContent.trim();
+      let hintText = SYM_FIELD_HINTS[title] || '';
+
+      const txtInfo = SYM_TEXT_GUIDE[title];
+      if (txtInfo) {
+        hintText = txtInfo.desc;
+        const inp = lbl.querySelector('input[type="text"]');
+        if (inp) inp.placeholder = txtInfo.ph;
+      }
+
+      if (hintText) {
+        lbl.style.display = 'flex';
+        lbl.style.flexDirection = 'column';
+        lbl.style.justifyContent = 'space-between';
+
+        const sub = document.createElement('div');
+        sub.style.cssText = 'font-size:9px;line-height:1.25;color:#788a78;margin-top:3px;text-transform:none;letter-spacing:0;font-weight:400;';
+        sub.textContent = hintText;
+        lbl.appendChild(sub);
+      }
+    });
+
+    const detSum = spEl.querySelector('details.sb-txt summary');
+    if (detSum && !detSum.dataset.enhanced) {
+      detSum.dataset.enhanced = '1';
+      detSum.textContent = 'TEXT & LABELS (CALLSIGN, HEADING, GRID)';
+    }
+  }
+
+  const spTarget = document.getElementById('sympanel');
+  if (spTarget) {
+    new MutationObserver(enhanceSymPanelDidactic).observe(spTarget, { childList: true, subtree: true });
+    enhanceSymPanelDidactic();
   }
 
 })();
