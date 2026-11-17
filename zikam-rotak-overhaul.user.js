@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RO-TAK // Zikam's Tactical Overhaul
 // @namespace    https://github.com
-// @version      1.0.0
+// @version      0.5.2b
 // @description  ATAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://githubusercontent.com
@@ -38,7 +38,7 @@
         alert('Error loading RO-TAK Overhaul from GitHub (' + res.status + ')');
         return;
       }
-      
+
       let html = res.responseText;
 
       html = html
