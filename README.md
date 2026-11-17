@@ -1,10 +1,13 @@
 # RO-TAK // Zikam's Tactical Overhaul (Add-On)
 
-> **Full ATAK-inspired C2 UI Overhaul & Tactical Mechanics Add-On for [Banana's RO-TAK](https://vercel.app).**
+> **Full ATAK-inspired C2 UI Overhaul & Tactical Mechanics Add-On for [Banana's RO-TAK](https://ro-tak.vercel.app/).**
 
-This add-on injects a military-grade **Android Team Awareness Kit (ATAK)** command & control interface directly on top of the official **RO-TAK** web app (`https://vercel.app`), preserving full multiplayer room compatibility while upgrading the HUD, navigation, and tactical tools.
+This add-on injects a military-grade **Android Team Awareness Kit (ATAK)** command & control interface directly on top of the official **RO-TAK** web app (`https://ro-tak.vercel.app/`), preserving full multiplayer room compatibility while upgrading the HUD, navigation, and tactical tools.
 
-![Tactical Operations Overview](screenshots/SC3.png)
+### Live Tactical Operations & Enhanced Compass Rangefinder
+Dragging the **Compass** tool displays live **Azimuth (`°`)**, **Target 8-Digit MGRS**, and **Real Distance (`m` / `km`)** directly over the line of sight, paired with real-time bottom-right telemetry.
+
+![Tactical Operations & Compass Rangefinder](screenshots/SC3.png)
 
 ---
 
@@ -15,23 +18,23 @@ This add-on injects a military-grade **Android Team Awareness Kit (ATAK)** comma
    * **Firefox:** [Tampermonkey](https://mozilla.org) or [Violentmonkey](https://mozilla.org)
 2. Click the direct install link below and press **Install**:
    * **[Install RO-TAK Tactical Overhaul (`zikam-rotak-overhaul.user.js`)](https://githubusercontent.com)**
-3. Open **[https://vercel.app](https://vercel.app)** (or refresh if already open). The overhaul loads automatically and stays up to date via GitHub.
+3. Open **[https://ro-tak.vercel.app/](https://ro-tak.vercel.app/)** (or refresh if already open). The overhaul loads automatically and stays up to date via GitHub.
 
 ---
 
 ## Interface Showcase
 
-### Tactical C2 Landing & Full HUD Overhaul
-* **Minimalist Tactical HUD:** Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom scale bar, and live **MGRS / HDG / RNG** telemetry.
-* **Custom Landing Screen:** Topographic backdrop with author attribution (`@zikaalm`), custom tactical icons, and repository switcher (`[MOD]` / `[BASE]`).
+### 1. Custom Tactical Landing Screen
+Topographic backdrop with author attribution (`@zikaalm`), custom tactical icons, and repository switcher (`[MOD]` / `[BASE]`).
 
-| Custom Tactical Landing | Full C2 HUD & Sidebar |
-| :---: | :---: |
-| ![Landing Page](screenshots/SC1.png) | ![C2 HUD Overview](screenshots/SC2.png) |
+![Custom Tactical Landing](screenshots/SC1.png)
 
----
+### 2. Full C2 HUD & Sidebar Controls
+Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom scale bar, and live **MGRS / HDG / RNG** telemetry.
 
-### Guided 9-Line MEDEVAC / CAS & Native Map Loader
+![Full C2 HUD & Sidebar](screenshots/SC2.png)
+
+### 3. Guided 9-Line MEDEVAC / CAS & Native Map Loader
 * **Didactic 9-Line Drawer:** Built-in tactical field guide explaining every line of **MEDEVAC** and **CAS** requests with one-click map grid picking and formatted clipboard export.
 * **Native Map Selector & Sawang Presets `[WIP]`:** Load full-resolution maps (**Sawang 15K** & **Ronograd 16K**) and 2-point MGRS/meter calibrations straight from the `≡` menu.
 
