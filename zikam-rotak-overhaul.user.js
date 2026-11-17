@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RO-TAK // Zikam's Tactical Overhaul
 // @namespace    https://github.com
-// @version      0.6.1b
+// @version      0.6.2b
 // @description  RO-TAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/icon-192.png
@@ -14,16 +14,22 @@
 // @run-at       document-start
 // ==/UserScript==
 
-(function() {
+(function () {
   'use strict';
 
   const REPO_RAW = 'https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/';
+  const SITE = 'https://ro-tak.vercel.app/';
 
   if (window.__ROTAK_ENHANCED_LOADED__) return;
   window.__ROTAK_ENHANCED_LOADED__ = true;
 
+  let mounted = false;
+
+  // ---------- Loading screen (never overwrites a mounted page) ----------
   function renderLoadingScreen() {
-    const root = document.documentElement || document.appendChild(document.createElement('html'));
+    if (mounted) return;
+    const root = document.documentElement;
+    if (!root) return;
     root.innerHTML =
       '<head><meta charset="utf-8"><title>RO-TAK // Zikam\'s Overhaul</title></head>' +
       '<body style="margin:0;background:#090b09;color:#00ff41;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;">' +
@@ -33,9 +39,7 @@
       '</div></body>';
   }
 
-  try {
-    window.stop();
-  } catch (_) {}
+  try { window.stop(); } catch (_) {}
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', renderLoadingScreen, { once: true });
@@ -43,61 +47,62 @@
     renderLoadingScreen();
   }
 
-  function rewriteHtml(html) {
-    return html
-      .replace(/<meta[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>/gi, '')
-      .replace(/(href|src)=["']\.\/images\//g, '$1="' + REPO_RAW + 'images/')
-      .replace(/(href|src)=["']images\//g, '$1="' + REPO_RAW + 'images/')
-      .replace(/['"]\.\/images\//g, '"' + REPO_RAW + 'images/')
-      .replace(/(href|src)=["']\.?\/?icon-192\.png["']/g, '$1="' + REPO_RAW + 'icon-192.png"')
-      .replace(/(href|src)=["']\.?\/?icon-512\.png["']/g, '$1="' + REPO_RAW + 'icon-512.png"')
-      .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://ro-tak.vercel.app/milsymbol.js"')
-      .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://ro-tak.vercel.app/symdata.js"')
-      .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://ro-tak.vercel.app/supabase.js"')
-      .replace(/<link rel="manifest"[^>]*>/i, '');
-  }
-
-  function mountHtml(html) {
-    const parsed = new DOMParser().parseFromString(html, 'text/html');
-    const scripts = Array.from(parsed.querySelectorAll('script'));
-    scripts.forEach((s) => s.remove());
-
-    const root = document.documentElement || document.appendChild(document.createElement('html'));
-    root.innerHTML = parsed.documentElement.innerHTML;
-
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement('script');
-      for (const attr of oldScript.attributes) {
-        newScript.setAttribute(attr.name, attr.value);
-      }
-      if (oldScript.src) {
-        newScript.async = false;
-      } else {
-        newScript.textContent = oldScript.textContent;
-      }
-      document.body.appendChild(newScript);
+  // ---------- Helpers ----------
+  function gm(url) {
+    return new Promise(function (resolve, reject) {
+      GM_xmlhttpRequest({
+        method: 'GET',
+        url: url,
+        onload: resolve,
+        onerror: function () { reject(new Error('Network error: ' + url)); },
+        ontimeout: function () { reject(new Error('Timeout: ' + url)); }
+      });
     });
   }
 
-  GM_xmlhttpRequest({
-    method: 'GET',
-    url: REPO_RAW + 'index.html?t=' + Date.now(),
-    onload: function(res) {
+  // Only the overhaul's own assets come from the GitHub repo. Everything else
+  // (milsymbol.js, symdata.js, original images...) resolves against ro-tak.vercel.app.
+  // IMPORTANT: only the path is replaced, never the surrounding quotes
+  // (replacing the quote broke `'./images/x.png'` into `"https://...x.png'` = SyntaxError).
+  function rewriteHtml(html) {
+    return html
+      .replace(/<meta[^>]*http-equiv=["']Content-Security-Policy["'][^>]*>/gi, '')
+      .replace(/<link rel="manifest"[^>]*>/i, '')
+      .replace(/(?:\.\/)?images\/(bg-tactical\.png|discord-avatar\.(?:png|jpg|webp))/g, REPO_RAW + 'images/$1')
+      .replace(/(href|src)=(["'])\.?\/?icon-(192|512)\.png\2/g, '$1=$2' + REPO_RAW + 'icon-$3.png$2')
+      // <base> so relative URLs (milsymbol.js, images/...) always resolve to the real site, even on /play/
+      .replace(/<head([^>]*)>/i, '<head$1><base href="' + SITE + '">');
+  }
+
+  function mount(html) {
+    mounted = true;
+    document.open();
+    document.write(html);
+    document.close();
+  }
+
+  // ---------- Main ----------
+  (async function () {
+    try {
+      const isPlayOrRoot = /^\/(play\/?)?$/.test(location.pathname);
+
+      // Ask the real server what it answers for this URL: 404 -> overhaul 404 page
+      let file = 'index.html';
+      if (!isPlayOrRoot) {
+        try {
+          const here = await gm(location.href);
+          if (here.status === 404) file = '404.html';
+        } catch (_) {}
+      }
+
+      const res = await gm(REPO_RAW + file + '?t=' + Date.now());
       if (res.status < 200 || res.status >= 300) {
-        console.error('[RO-TAK Overhaul] HTTP error:', res.status, res.statusText);
-        alert('Network error: Could not fetch RO-TAK Overhaul (HTTP ' + res.status + ')');
-        return;
+        throw new Error('HTTP ' + res.status + ' while fetching ' + file);
       }
-      try {
-        mountHtml(rewriteHtml(res.responseText));
-      } catch (err) {
-        console.error('[RO-TAK Overhaul] Mount error:', err);
-        alert('Mount error: ' + err.message);
-      }
-    },
-    onerror: function(err) {
-      console.error('[RO-TAK Overhaul] GM_xmlhttpRequest error:', err);
-      alert('Network error: Could not fetch RO-TAK Overhaul (GM_xmlhttpRequest failed)');
+      mount(rewriteHtml(res.responseText));
+    } catch (err) {
+      console.error('[RO-TAK Overhaul]', err);
+      alert('RO-TAK Overhaul error: ' + err.message);
     }
-  });
+  })();
 })();
