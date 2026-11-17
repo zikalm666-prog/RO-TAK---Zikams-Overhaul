@@ -5,7 +5,7 @@
 // @description  ATAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://githubusercontent.com
-// @match        https://vercel.app*
+// @match        https://ro-tak.vercel.app/*
 // @grant        GM_xmlhttpRequest
 // @connect      ://githubusercontent.com
 // @updateURL    https://://githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/zikam-rotak-overhaul.user.js
@@ -16,7 +16,7 @@
 (function() {
   'use strict';
 
-  const REPO_RAW = 'https://://githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/';
+  const REPO_RAW = 'https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/';
 
   // Evitar bucle infinito si ya se inyectó el overhaul
   if (window.__ZIKAM_ROTAK_LOADED__) return;
@@ -43,16 +43,15 @@
 
       let html = res.responseText;
 
-      // Redirigir todas las rutas relativas de recursos, iconos y mapas hacia tu repositorio en GitHub
       html = html
         .replace(/(href|src)=["']\.\/images\//g, '$1="' + REPO_RAW + 'images/')
         .replace(/(href|src)=["']images\//g, '$1="' + REPO_RAW + 'images/')
         .replace(/['"]\.\/images\//g, '"' + REPO_RAW + 'images/')
         .replace(/(href|src)=["']\.?\/?icon-192\.png["']/g, '$1="' + REPO_RAW + 'icon-192.png"')
         .replace(/(href|src)=["']\.?\/?icon-512\.png["']/g, '$1="' + REPO_RAW + 'icon-512.png"')
-        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://vercel.appmilsymbol.js"')
-        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://vercel.appsymdata.js"')
-        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://vercel.appsupabase.js"')
+        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://ro-tak.vercel.app/milsymbol.js"')
+        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://ro-tak.vercel.app/symdata.js"')
+        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://ro-tak.vercel.app/supabase.js"')
         .replace(/<link rel="manifest"[^>]*>/i, '');
 
       document.open();
@@ -64,4 +63,3 @@
     }
   });
 })();
-git add zikam-rotak-overhaul.user.js
