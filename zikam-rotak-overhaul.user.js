@@ -42,9 +42,9 @@
         .replace(/['"]\.\/images\//g, '"' + REPO_RAW + 'images/')
         .replace(/(href|src)=["']\.?\/?icon-192\.png["']/g, '$1="' + REPO_RAW + 'icon-192.png"')
         .replace(/(href|src)=["']\.?\/?icon-512\.png["']/g, '$1="' + REPO_RAW + 'icon-512.png"')
-        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://vercel.app"')
-        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://vercel.app"')
-        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://vercel.app"')
+        .replace(/src=["']\.?\/?milsymbol\.js["']/g, 'src="https://ro-tak.vercel.app/milsymbol.js"')
+        .replace(/src=["']\.?\/?symdata\.js["']/g, 'src="https://ro-tak.vercel.app/symdata.js"')
+        .replace(/src=["']\.?\/?supabase\.js["']/g, 'src="https://ro-tak.vercel.app/supabase.js"')
         .replace(/<link rel="manifest"[^>]*>/i, '');
 
       document.open();
