@@ -3064,7 +3064,7 @@ if (!IS_ELECTRON) { const m = location.pathname.match(/^\/(privacy|tos)\/?$/); i
     setTimeout(() => { document.documentElement.classList.remove('land'); L.classList.remove('out'); L.remove(); }, 450);
     removeEventListener('keydown', onKey, true);
   }
-  function enter() { if (!introOpen() && !seenIntro()) { openIntro(); return; } launch(); }
+  function enter() { launch(); } // intro skipped on purpose: ENTER goes straight to /play
   function onKey(e) {
     if (introOpen()) { if (e.key === 'Escape' && leaveEl.hidden && lg.hidden) { e.preventDefault(); finishIntro(); } return; }
     if (lgOpen()) { if (e.key === 'Escape') { closeLg(); e.preventDefault(); } return; }
@@ -4866,7 +4866,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       background-color: #0b0d10 !important; overflow: hidden !important;
     }
     #landing::before, #landing::after { display: none !important; content: none !important; }
-    #landing > *:not(.hero):not(nav):not(footer):not(.foot):not(.updated):not(#atak-topo-bg) { display: none !important; }
+    #landing > *:not(.hero):not(nav):not(footer):not(.foot):not(.updated):not(#atak-topo-bg):not(#intro) { display: none !important; }
     #landing .hero img:not(.avatar):not(#atak-discord-pfp), #landing .hero .poppy, #landing .chat { display: none !important; }
     #landing .hero {
       position: relative !important; top: auto !important; left: auto !important; transform: none !important;
@@ -5406,7 +5406,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       radial.classList.remove('open');
       scaleCalib = null;
       measOrigin = null;
-      measTag.style.display = 'none';
+      if (typeof measTag !== 'undefined' && measTag) measTag.style.display = 'none';
       updateScaleDisplay();
     }
  
@@ -5436,7 +5436,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
         const topBar = document.createElement('div');
         topBar.id = 'atak-hero-top';
         topBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:monospace;font-size:10.5px;font-weight:600;color:#94a3b8;letter-spacing:1.1px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);white-space:nowrap;';
-        topBar.innerHTML = '<div>RO-TAK <span style="color:#00ff41;font-weight:800;text-shadow:0 0 8px rgba(0,255,65,0.45);background:transparent;">[ENHANCED]</span>  //  SQUAD TACTICAL MAPPING &amp; PLANNING  ·  v0.7.0b</div>';
+        topBar.innerHTML = '<div>RO-TAK <span style="color:#00ff41;font-weight:800;text-shadow:0 0 8px rgba(0,255,65,0.45);background:transparent;">[ENHANCED]</span>  //  SQUAD TACTICAL MAPPING &amp; PLANNING  ·  v0.7.1b</div>';
         heroBox.prepend(topBar);
       }
 
@@ -5529,7 +5529,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
 
       document.querySelectorAll('#landing *').forEach(function(el) {
         if (el.children.length === 0 && el.textContent && el.textContent.includes('Updated')) {
-          el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;">ZIKAM\'S OVERHAUL</span> <span style="color:#475569;margin:0 6px;">|</span> v0.7.0b';
+          el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;">ZIKAM\'S OVERHAUL</span> <span style="color:#475569;margin:0 6px;">|</span> v0.7.1b';
         }
       });
     }
@@ -5684,6 +5684,174 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       intro: 'MISSION SCRATCHPAD: Free-form tactical notes, frequencies, callsigns, and objectives. Saved automatically in your browser.'
     }
   };
+
+
+  const ATAK_REPORTS = {
+    s: {
+      label: 'SALUTE', title: 'SALUTE REPORT', style: 'tag',
+      rows: [
+        ['S', 'Size', 'text', '4 PAX'],
+        ['A', 'Activity', 'text', 'MOVING N ON ROAD'],
+        ['L', 'Location', 'grid'],
+        ['U', 'Unit / uniform', 'text', 'RED CAMO, AK + RPG'],
+        ['T', 'Time observed', 'text', '1342Z'],
+        ['E', 'Equipment', 'text', '2 TECHNICALS, 1 BTR'],
+        ['', 'Remarks', 'area']
+      ]
+    },
+    f: {
+      label: 'CFF', title: 'CALL FOR FIRE', style: 'plain',
+      rows: [
+        ['1', 'Observer / fire unit', 'text', 'HAMMER 6 THIS IS WOLF 2'],
+        ['2', 'Mission type', 'one', [['A', 'Adjust fire'], ['F', 'Fire for effect'], ['S', 'Suppress'], ['I', 'Immediate suppression']]],
+        ['3', 'Target location', 'grid'],
+        ['4', 'Observer-target direction', 'text', '270 DEG'],
+        ['5', 'Target description', 'text', '3 BTR IN THE OPEN'],
+        ['6', 'Ammunition', 'one', [['H', 'HE'], ['S', 'Smoke'], ['I', 'Illumination']]],
+        ['7', 'Rounds / volume', 'text', '3 RDS'],
+        ['8', 'Friendlies close?', 'one', [['N', 'No'], ['Y', 'Danger close']]],
+        ['9', 'Method of control', 'one', [['R', 'When ready'], ['M', 'At my command'], ['T', 'Time on target']]],
+        ['10', 'Corrections', 'text', 'LEFT 50 ADD 100'],
+        ['', 'Remarks', 'area']
+      ]
+    },
+    r: {
+      label: 'SITREP', title: 'SITREP', style: 'plain',
+      rows: [
+        ['1', 'Time', 'text', '1342Z'],
+        ['2', 'Unit / callsign', 'text', 'WOLF 2'],
+        ['3', 'Location', 'grid'],
+        ['4', 'Activity', 'text', 'HOLDING AT OBJ ALPHA'],
+        ['5', 'Enemy', 'text', 'LIGHT CONTACT N'],
+        ['6', 'Personnel', 'count', [['T', 'Total'], ['W', 'WIA'], ['K', 'KIA']]],
+        ['7', 'Supplies', 'one', [['G', 'Green'], ['A', 'Amber'], ['R', 'Red']]],
+        ['8', 'Next action', 'text', 'MOVE TO OBJ BRAVO'],
+        ['9', 'Requests', 'text', 'NEED RESUPPLY']
+      ]
+    }
+  };
+
+  NL_HINTS.s = {
+    intro: 'SALUTE REPORT: Quick enemy sighting report (also works as a SPOT report). Fill in what you saw and click COPY to send it to squad chat.',
+    lines: [
+      'Size: how many enemies you saw (people, vehicles, or both). Example: 4 PAX, 2 vehicles.',
+      'Activity: what they are doing right now and which way they are heading.',
+      'Location: 8-digit MGRS grid of the ENEMY (not yours). Tap the crosshair icon to pick it on the map.',
+      'Unit / uniform: faction, camo, insignia or markings that tell you who they are.',
+      'Time: when you saw them. Use Zulu time if your squad does (e.g. 1342Z), or write NOW.',
+      'Equipment: weapons and vehicles you can identify (RPG, MG, BTR, technical, mortar...).',
+      'Extra details: your own position, where you are watching from, what you plan to do next.'
+    ]
+  };
+  NL_HINTS.f = {
+    intro: 'CALL FOR FIRE: Request mortar or artillery on a target. Fill the lines, COPY, and read them to the fire unit over radio or chat.',
+    lines: [
+      'Your callsign and the callsign of the fire unit you are calling. Example: HAMMER 6, THIS IS WOLF 2.',
+      'Adjust Fire = you will correct the rounds onto the target. Fire for Effect = target is well located, fire everything. Suppress = pin the enemy down.',
+      '8-digit MGRS grid of the TARGET. Tap the crosshair icon to pick it on the map.',
+      'Compass bearing from YOU to the target. The fire unit needs it so your LEFT / RIGHT corrections make sense.',
+      'What the target is, how many, what they are doing, and whether they are in the open or in cover.',
+      'HE = explosive rounds. Smoke = concealment or marking. Illumination = light up the area at night.',
+      'How many rounds to fire, or how many tubes / guns. Example: 3 RDS.',
+      'Say DANGER CLOSE when friendly troops are near the target. The safe distance depends on the weapon, so follow your unit rules.',
+      'When Ready = fire as soon as ready. At My Command = wait for your FIRE call. Time on Target = all rounds land at the same moment.',
+      'After the first rounds, say how far off they landed along your line to the target. Example: LEFT 50, ADD 100 (longer) or DROP 100 (shorter).',
+      'Extra info for the fire unit. When the target is destroyed, finish with END OF MISSION.'
+    ]
+  };
+  NL_HINTS.r = {
+    intro: 'SITREP: Short status update for command. Fill the lines and click COPY to post it in squad chat.',
+    lines: [
+      'Time of the report. Zulu time (e.g. 1342Z) or NOW.',
+      'Your callsign or squad name.',
+      '8-digit MGRS grid of your position. Tap the crosshair icon to pick it on the map.',
+      'What your element is doing right now (holding, moving, assaulting, resting...).',
+      'Enemy contact or activity near you: where, how many, how strong.',
+      'Your headcount: Total people, WIA (wounded) and KIA (killed). Leave a box empty for zero.',
+      'Ammo, medical supplies and fuel. Green = good, Amber = running low, Red = critical.',
+      'What you plan to do next and roughly when.',
+      'What you need from command: resupply, MEDEVAC, CAS, reinforcements...'
+    ]
+  };
+
+  function atakReportText(key, data) {
+    const R = ATAK_REPORTS[key];
+    if (!R) return '';
+    const D = data || {};
+    const out = [R.title];
+    R.rows.forEach(function(row, i) {
+      const tag = row[0], label = row[1], type = row[2], ex = row[3], v = D['l' + i];
+      let t = '';
+      if (type === 'count') {
+        t = v && typeof v === 'object'
+          ? ex.filter(function(p) { return v[p[0]]; }).map(function(p) { return p[1].toUpperCase() + ' ' + v[p[0]]; }).join(', ')
+          : '';
+      } else if (type === 'many') {
+        t = Array.isArray(v) ? ex.filter(function(p) { return v.includes(p[0]); }).map(function(p) { return p[1]; }).join(', ') : '';
+      } else if (type === 'one') {
+        const o = ex.find(function(p) { return p[0] === v; });
+        t = o ? o[1] : '';
+      } else {
+        t = typeof v === 'string' ? v.trim() : '';
+      }
+      if (!t) return;
+      out.push((R.style === 'tag' && tag ? tag + ' - ' : '') + label.toUpperCase() + ': ' + t.toUpperCase());
+    });
+    if (out.length === 1) out.push('(EMPTY)');
+    return out.join('\n');
+  }
+
+  (function installAtakReports() {
+    const tabs = document.getElementById('nlTabs');
+    if (!tabs || typeof NL === 'undefined' || typeof nlD === 'undefined' || typeof nlPaint !== 'function') return;
+    if (NL.s) return;
+
+    Object.keys(ATAK_REPORTS).forEach(function(k) {
+      NL[k] = ATAK_REPORTS[k].rows;
+      if (!nlD[k] || typeof nlD[k] !== 'object') nlD[k] = {};
+    });
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('atak-9line') || 'null');
+      if (saved && typeof saved === 'object') {
+        Object.keys(ATAK_REPORTS).forEach(function(k) {
+          if (saved[k] && typeof saved[k] === 'object') nlD[k] = saved[k];
+        });
+        if (ATAK_REPORTS[saved.t]) nlTab = saved.t;
+      }
+    } catch (e) {}
+
+    const notesBtn = tabs.querySelector('button[data-t="n"]');
+    Object.keys(ATAK_REPORTS).forEach(function(k) {
+      if (tabs.querySelector('button[data-t="' + k + '"]')) return;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.t = k;
+      b.textContent = ATAK_REPORTS[k].label;
+      b.onclick = function() { nlTab = k; nlPick = null; nlSave(); nlPaint(); };
+      tabs.insertBefore(b, notesBtn);
+    });
+
+    if (!document.getElementById('atak-reports-css')) {
+      const st = document.createElement('style');
+      st.id = 'atak-reports-css';
+      st.textContent =
+        '#nl #nlTabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr)) 30px!important;grid-auto-rows:28px!important;gap:6px!important}' +
+        '#nl #nlTabs #nlX{grid-column:4!important;grid-row:1 / span 2!important;height:auto!important;width:auto!important;flex:none!important}' +
+        '#nl #nlTabs button[data-t]{min-width:0!important;width:auto!important;flex:none!important;padding:0 4px!important;font-size:11px!important;letter-spacing:0.3px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}';
+      document.head.appendChild(st);
+    }
+
+    if (typeof nlText === 'function' && !nlText._atakReports) {
+      const baseNlText = nlText;
+      nlText = function() {
+        return ATAK_REPORTS[nlTab] ? atakReportText(nlTab, nlD[nlTab]) : baseNlText();
+      };
+      nlText._atakReports = true;
+    }
+
+    if (ATAK_REPORTS[nlTab] && document.getElementById('nl') && document.getElementById('nl').classList.contains('open')) nlPaint();
+  })();
 
   function enhance9LineDidactic() {
     const nlBody = document.getElementById('nlBody');
@@ -6006,8 +6174,44 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   loadingHud.style.cssText = 'display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:99999;background:rgba(9,11,9,0.96);border:1px solid #00ff41;border-top:2px solid #00ff41;border-radius:2px;padding:16px 28px;box-shadow:0 12px 40px rgba(0,0,0,0.92),0 0 20px rgba(0,255,65,0.2);font-family:monospace;text-align:center;pointer-events:none;';
   loadingHud.innerHTML =
     '<div id="atak-load-txt" style="color:#00ff41;font-size:15px;font-weight:800;letter-spacing:2px;">LOADING.</div>' +
-    '<div style="color:#94a3b8;font-size:10px;margin-top:6px;letter-spacing:1px;">DECODING NATIVE MAP TEXTURE</div>';
+    '<div id="atak-load-sub" style="color:#94a3b8;font-size:10px;margin-top:6px;letter-spacing:1px;">DECODING NATIVE MAP TEXTURE</div>' +
+    '<div id="atak-load-bar" style="display:none;margin-top:10px;height:5px;background:#1b221b;border:1px solid #2c382c;border-radius:2px;overflow:hidden;"><div id="atak-load-fill" style="width:0%;height:100%;background:#00ff41;transition:width .15s linear;"></div></div>';
   document.body.appendChild(loadingHud);
+
+  window.atakResetLoad = function() {
+    const sub = document.getElementById('atak-load-sub');
+    const bar = document.getElementById('atak-load-bar');
+    const fill = document.getElementById('atak-load-fill');
+    if (sub) sub.textContent = 'DECODING NATIVE MAP TEXTURE';
+    if (bar) bar.style.display = 'none';
+    if (fill) { fill.style.width = '0%'; fill.style.opacity = '1'; }
+  };
+
+  // Called by the userscript while a native map is being fetched.
+  // info = { phase: 'cache' | 'download', loaded, total }
+  window.atakLoadProgress = function(info) {
+    const sub = document.getElementById('atak-load-sub');
+    const bar = document.getElementById('atak-load-bar');
+    const fill = document.getElementById('atak-load-fill');
+    if (!sub || !bar || !fill || !info) return;
+    const mb = function(n) { return (n / 1048576).toFixed(1); };
+    if (info.phase === 'cache') {
+      sub.textContent = 'LOADING FROM LOCAL CACHE';
+      bar.style.display = 'none';
+    } else if (info.phase === 'download') {
+      bar.style.display = 'block';
+      if (info.total > 0) {
+        const pct = Math.max(0, Math.min(100, Math.round(info.loaded * 100 / info.total)));
+        sub.textContent = 'DOWNLOADING ' + pct + '%  ·  ' + mb(info.loaded) + ' / ' + mb(info.total) + ' MB';
+        fill.style.opacity = '1';
+        fill.style.width = pct + '%';
+      } else {
+        sub.textContent = 'DOWNLOADING  ·  ' + mb(info.loaded || 0) + ' MB';
+        fill.style.opacity = '.35';
+        fill.style.width = '100%';
+      }
+    }
+  };
 
   let loadAnimTimer = null;
   window.showAtakLoading = function(show) {
@@ -6016,6 +6220,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       let dots = 1;
       if (txtEl) txtEl.textContent = 'LOADING.';
       loadingHud.style.display = 'block';
+      window.atakResetLoad();
       clearInterval(loadAnimTimer);
       loadAnimTimer = setInterval(function() {
         dots = (dots % 3) + 1;
