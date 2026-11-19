@@ -55,7 +55,7 @@
   ]);
 
   const FORCE_REPO_ASSETS = new Set(['icon-192.png', 'icon-512.png']);
-  // Huge native maps: not prefetched, fetched on demand when the user presses LOAD.
+
   const LAZY_ASSET_RE = /(^|\/)(SawangFull|Rono16k)\.png$/i;
   const SAFE_ASSET_RE = /^(images\/[\w\-.\/]+\.(png|jpe?g|webp|gif|ico|svg)|icon-(192|512)\.png)$/i;
 

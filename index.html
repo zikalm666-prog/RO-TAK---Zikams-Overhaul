@@ -6187,7 +6187,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     if (fill) { fill.style.width = '0%'; fill.style.opacity = '1'; }
   };
 
-  // Called by the userscript while a native map is being fetched.
   // info = { phase: 'cache' | 'download', loaded, total }
   window.atakLoadProgress = function(info) {
     const sub = document.getElementById('atak-load-sub');
