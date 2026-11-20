@@ -3940,6 +3940,8 @@ const TOUR = [
   ['Draw', 'Pick a tool on the bottom bar, then drag on the map. The shield places unit symbols and the pin places waypoints.'],
   ['Move and layers', 'Drag with the move tool to pan. Scroll or pinch to zoom. Alt-scroll or twist two fingers to rotate. The stack button beside the compass hides layers for you only.'],
   ['Bearing and ping', 'Compass tool: drag from one point to another to read the bearing. Ping tool: tap to flash a spot for everyone in the room.'],
+  ['Tactical HUD & Time', 'Top-left shows Local and live UTC Zulu time. Click the clock anytime to copy military DTG (Date-Time Group). Use the speaker button beside the compass to toggle Stealth Audio.'],
+  ['MGRS Grid & Mission Timer', 'Press G or click the grid icon beside the compass to toggle MGRS lines. In the Timers tab, track the shared Operation Clock (OP CLOCK) with live HUD status and host-protected reset.'],
   ['Rooms', 'Open the menu, enter a room code and join. Copy the invite link to bring people in. Lead the room and anyone can follow your view.'],
 ];
 if (IS_ELECTRON) TOUR.unshift(['Size', MOD + '+Shift+Up / Down makes the whole overlay bigger or smaller. ' + MOD + '+Shift+Plus / Minus scales just the buttons and text.']);
@@ -5099,6 +5101,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     btnCalM.onclick = startMeterCalib;
 
     const btnClrM = document.createElement('button');
+    btnClrM.id = 'atak-clr-m-btn';
     btnClrM.className = 'alt';
     btnClrM.textContent = 'Clear meters';
     btnClrM.onclick = function() {
@@ -5326,10 +5329,9 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
             if (typeof toast === 'function') toast('Invalid calibration file');
             return;
           }
-          if (data.grid) {
-            grid = data.grid;
-            localStorage.setItem('atak-saved-grid', JSON.stringify(grid));
-            if (typeof updGridUI === 'function') updGridUI();
+          if (data.grid && typeof setGrid === 'function') {
+            setGrid(data.grid, true);
+            if (typeof pushGrid === 'function') pushGrid();
           }
           if (typeof data.metersPerPx === 'number' && data.metersPerPx > 0) {
             metersPerPx = data.metersPerPx;
@@ -5368,7 +5370,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   }
 
   injectCalibIOButtons();
-  const mBtnIO = document.getElementById('menuBtn');
+  const mBtnIO = document.getElementById('b-menu');
   if (mBtnIO) mBtnIO.addEventListener('click', injectCalibIOButtons);
   
   stage.addEventListener('pointerdown', function(e) {
@@ -5405,17 +5407,11 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     if (e.key === 'Escape') {
       radial.classList.remove('open');
       scaleCalib = null;
-      measOrigin = null;
-      if (typeof measTag !== 'undefined' && measTag) measTag.style.display = 'none';
       updateScaleDisplay();
     }
  
   });
-      document.querySelectorAll('#landing *').forEach(function(el) {
-    if (el.children.length === 0 && el.textContent && el.textContent.includes('Updated')) {
-      el.innerHTML = '<span style="color:#cbd5e1;font-weight:700;letter-spacing:0.8px;"></span> <span style="color:#475569;margin:0 6px;">|</span> Updated on November 16th 2026';
-    }
-  });
+      
       const landingEl = document.getElementById('landing');
     if (landingEl) {
       const bgDiv = document.createElement('div');
@@ -5852,8 +5848,11 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
 
     if (ATAK_REPORTS[nlTab] && document.getElementById('nl') && document.getElementById('nl').classList.contains('open')) nlPaint();
   })();
-
+  let nlBusy = false;
   function enhance9LineDidactic() {
+    if (nlBusy) return;
+    nlBusy = true;
+    try {
     const nlBody = document.getElementById('nlBody');
     const activeTabBtn = document.querySelector('#nlTabs button.on');
     if (!nlBody || !activeTabBtn) return;
@@ -5999,11 +5998,13 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       noteArea.addEventListener('input', updateCounter);
       updateCounter();
 
-      counterBar.append(countTxt, modeBtn);
+counterBar.append(countTxt, modeBtn);
       toolsWrap.append(tplRow, counterBar);
       noteArea.after(toolsWrap);
     }
-
+    } finally {
+      nlBusy = false;
+    }
   }
 
   const nlContainer = document.getElementById('nl');
@@ -6015,34 +6016,7 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     if (nlBodyEl) nlObs.observe(nlBodyEl, { childList: true });
     nlContainer.addEventListener('click', function() { setTimeout(enhance9LineDidactic, 15); });
     setTimeout(enhance9LineDidactic, 100);
-  }
-  const lghBtn = document.getElementById('lgh');
-  if (lghBtn && !document.getElementById('atak-gh-pop')) {
-    const pop = document.createElement('div');
-    pop.id = 'atak-gh-pop';
-    pop.style.cssText = 'display:none;position:fixed;min-width:245px;background:#0d1015;border:1px solid #ef4444;border-top:2px solid #ef4444;border-radius:2px;padding:6px;z-index:99999;box-shadow:0 14px 34px rgba(0,0,0,0.95);flex-direction:column;gap:5px;font-family:monospace;';
-    pop.innerHTML =
-      '<a href="https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 12px;background:rgba(239,68,68,0.16);border:1px solid rgba(239,68,68,0.55);border-radius:2px;color:#ffffff;font:700 10.5px monospace;letter-spacing:0.8px;text-decoration:none;white-space:nowrap;">' +
-        '<span>ZIKAM\'S OVERHAUL</span><span style="color:#ef4444;">[OVERHAUL] ↗</span>' +
-      '</a>' +
-      '<a href="https://github.com/rice-evans/RO-TAK" target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:space-between;height:36px;padding:0 12px;background:#13171c;border:1px solid rgba(255,255,255,0.16);border-radius:2px;color:#cbd5e1;font:700 10.5px monospace;letter-spacing:0.8px;text-decoration:none;white-space:nowrap;">' +
-        '<span>ORIGINAL RO-TAK</span><span style="color:#94a3b8;">[BASE] ↗</span>' +
-      '</a>';
-    document.body.appendChild(pop);
 
-    lghBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      if (pop.style.display === 'flex') { pop.style.display = 'none'; return; }
-      const rect = lghBtn.getBoundingClientRect();
-      pop.style.left = rect.left + 'px';
-      pop.style.top  = (rect.bottom + 6) + 'px';
-      pop.style.display = 'flex';
-    });
-
-    document.addEventListener('click', function(ev) {
-      if (!pop.contains(ev.target) && !lghBtn.contains(ev.target)) pop.style.display = 'none';
-    });
   }
   const PRESET_MAPS = [
     { name: 'SAWANG',   path: './images/SawangFull.png' },
@@ -6079,18 +6053,23 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     const btnLoadPreset = document.createElement('button');
     btnLoadPreset.type = 'button';
     btnLoadPreset.textContent = 'LOAD';
-    btnLoadPreset.onclick = function() {
-      if (typeof hostOnly === 'function' && hostOnly()) {
-        if (typeof toast === 'function') toast('Only the host can change maps');
+    btnLoadPreset.onclick = function () {
+      if (typeof room !== 'undefined' && room) {
+        if (typeof toast === 'function') toast('Native maps only load in LOCAL mode, leave the room first.');
         return;
       }
+      const val = selMap.value;
       if (typeof setImg === 'function') {
-        setImg(selMap.value, { reset: true, fit: true }).then(function(ok) {
+        setImg(val, { reset: true, fit: true }).then(function (ok) {
           if (ok) {
-            if (typeof toast === 'function') toast('Loaded: ' + selMap.options[selMap.selectedIndex].text);
+            try {
+              localStorage.removeItem('atak-map');
+              localStorage.setItem('atak-native-map', val);
+            } catch (_) {}
+            if (typeof toast === 'function') toast ('loaded: ' + selMap.options[selMap.selectedIndex].text);
             menuEl.classList.remove('open');
           } else if (typeof toast === 'function') {
-            toast('File not found: ' + selMap.value);
+            toast ('File not found: ' + val);
           }
         });
       }
@@ -6104,6 +6083,11 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
       const fIn = document.getElementById('file');
       if (fIn) fIn.click();
     };
+
+    const pcInput = document.getElementById('file');
+  if (pcInput) pcInput.addEventListener('change', function () {
+    try { localStorage.removeItem('atak-native-map'); } catch (_) {}
+  });
 
     const btnAddMulti = document.createElement('button');
     btnAddMulti.type = 'button';
@@ -6345,6 +6329,291 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
     enhanceSymPanelDidactic();
   }
 
+})();
+</script>
+
+<!-- === PARCHE 1: GRID TOGGLE + DUAL CLOCK (LOC/UTC) + OP CLOCK + G-SHOCK CHIME + AUDIO MUTE + DTG === -->
+<style>
+  #gridTog, #audioTog {
+    width: 22px; height: 22px; border: 0; border-radius: 2px !important;
+    background: #141814 !important; border: 1px solid #2c382c !important; color: #d8e2d8 !important;
+    cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center;
+  }
+  #gridTog svg, #audioTog svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #gridTog.off { color: #64748b !important; opacity: 0.65; }
+  #gridTog:hover, #audioTog:hover { border-color: #00ff41 !important; color: #fff !important; }
+
+  #audioTog.muted { color: #ff3b3b !important; border-color: #ff3b3b !important; }
+  #audioTog.muted:hover { border-color: #ff5555 !important; color: #ff5555 !important; }
+  @media (pointer: coarse) {
+    #gridTog, #audioTog { width: 30px; height: 30px; }
+    #gridTog svg, #audioTog svg { width: 16px; height: 16px; }
+  }
+
+  html.web #clock { line-height: 1.25 !important; text-align: left !important; padding: 4px 8px !important; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+  html.web #clock:hover { filter: brightness(1.2); }
+  #clock .clk-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  #clock .clk-copy-icon { width: 10px; height: 10px; stroke: #64748b; fill: none; stroke-width: 2; flex-shrink: 0; transition: stroke 0.15s; }
+  #clock:hover .clk-copy-icon { stroke: #00ff41; }
+  #clock .clk-utc { display: block; color: #00ff41; font-size: 9.5px; letter-spacing: 0.6px; margin-top: 1px; }
+
+  #atak-opclock {
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    background: #0d100d; border: 1px solid #2b382b; border-left: 3px solid #00ff41;
+    border-radius: 2px; padding: 6px 8px; margin-bottom: 4px; font-family: monospace;
+  }
+  #atak-opclock .op-lbl { font-size: 9.5px; color: #8a998a; text-transform: uppercase; }
+  #atak-opclock .op-val { font-size: 14px; font-weight: 800; color: #00ff41; letter-spacing: 0.8px; }
+  #atak-opclock .op-btns { display: flex; gap: 4px; }
+</style>
+<script>
+(function () {
+  // Shared ATAK Bridge for room sync
+  window.__atakBridge = window.__atakBridge || (function () {
+    const handlers = [], layers = [], onAttaches = [];
+    function send(payload) {
+      if (typeof room === 'undefined' || !room || typeof channel === 'undefined' || !channel) return;
+      try {
+        const r = channel.send({ type: 'broadcast', event: 'atak_ext', payload: Object.assign({ from: clientId }, payload) });
+        if (r && r.catch) r.catch(() => {});
+      } catch (_) {}
+    }
+    function on(fn) { handlers.push(fn); }
+    function addLayer(fn) { layers.push(fn); }
+    function onAttach(fn) { onAttaches.push(fn); }
+    function attach() {
+      if (typeof channel === 'undefined' || !channel || channel._atakExtHooked) return;
+      channel._atakExtHooked = true;
+      channel.on('broadcast', { event: 'atak_ext' }, function (msg) {
+        const d = msg && msg.payload;
+        if (!d || d.from === clientId) return;
+        handlers.forEach(fn => { try { fn(d); } catch (_) {} });
+      });
+      onAttaches.forEach(fn => { try { fn(); } catch (_) {} });
+    }
+    if (typeof trackMe === 'function' && !trackMe._atakBridge) {
+      const orig = trackMe;
+      trackMe = function () { orig(); attach(); };
+      trackMe._atakBridge = true;
+    }
+    if (typeof draw === 'function' && !draw._atakBridge) {
+      const origDraw = draw;
+      draw = function () {
+        origDraw();
+        if (typeof ctx !== 'undefined' && typeof c !== 'undefined' && ctx.canvas === c) {
+          layers.forEach(fn => { try { fn(); } catch (_) {} });
+        }
+      };
+      draw._atakBridge = true;
+    }
+    return { send, on, addLayer, onAttach, attach };
+  })();
+
+  // 1. MGRS Grid Toggle & Audio Mute Buttons in #navbtns2
+  const nav2 = document.getElementById('navbtns2');
+  if (nav2 && typeof setg !== 'undefined') {
+    // Grid Toggle Button
+    if (!document.getElementById('gridTog')) {
+      const gBtn = document.createElement('button');
+      gBtn.id = 'gridTog';
+      gBtn.title = 'Toggle MGRS Grid (G)';
+      gBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>';
+      const syncGridBtn = function () {
+        gBtn.classList.toggle('off', !setg.showGrid);
+        gBtn.classList.toggle('on', !!setg.showGrid);
+        if (typeof GR !== 'undefined' && GR.show) GR.show.checked = !!setg.showGrid;
+      };
+      window.toggleMgrsGrid = function () {
+        setg.showGrid = !setg.showGrid;
+        try { localStorage.setItem('atak-set', JSON.stringify(setg)); } catch (_) {}
+        syncGridBtn();
+        if (typeof draw === 'function') draw();
+      };
+      gBtn.onclick = window.toggleMgrsGrid;
+      gBtn.addEventListener('pointerdown', e => e.stopPropagation());
+      nav2.appendChild(gBtn);
+      syncGridBtn();
+    }
+
+    // Audio Mute Toggle Button
+    if (!document.getElementById('audioTog')) {
+      const aBtn = document.createElement('button');
+      aBtn.id = 'audioTog';
+      window.__atakAudioMuted = localStorage.getItem('atak-audio-muted') === '1';
+
+      const SVG_SPEAKER_ON = '<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>';
+      const SVG_SPEAKER_MUTED = '<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>';
+
+      const syncAudioBtn = function () {
+        aBtn.classList.toggle('muted', !!window.__atakAudioMuted);
+        aBtn.innerHTML = window.__atakAudioMuted ? SVG_SPEAKER_MUTED : SVG_SPEAKER_ON;
+        aBtn.title = window.__atakAudioMuted ? 'Tactical Audio: MUTED (Click to unmute)' : 'Tactical Audio: ACTIVE (Click to mute)';
+      };
+
+      aBtn.onclick = function () {
+        window.__atakAudioMuted = !window.__atakAudioMuted;
+        try { localStorage.setItem('atak-audio-muted', window.__atakAudioMuted ? '1' : '0'); } catch (_) {}
+        syncAudioBtn();
+        if (typeof toast === 'function') toast(window.__atakAudioMuted ? 'AUDIO: STEALTH MUTED' : 'AUDIO: ACTIVE');
+      };
+      aBtn.addEventListener('pointerdown', e => e.stopPropagation());
+      nav2.appendChild(aBtn);
+      syncAudioBtn();
+    }
+  }
+
+  // 2. G-Shock Subtle Hourly Pip-Pip Chime (Synthesized via Web Audio API)
+  let actx = null;
+  function playGShockChime() {
+    if (window.__atakAudioMuted) return;
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      const now = actx.currentTime;
+      [0, 0.12].forEach(offset => {
+        const osc = actx.createOscillator();
+        const gain = actx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(2400, now + offset);
+        gain.gain.setValueAtTime(0.04, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.045);
+        osc.connect(gain);
+        gain.connect(actx.destination);
+        osc.start(now + offset);
+        osc.stop(now + offset + 0.05);
+      });
+    } catch (_) {}
+  }
+
+  // 3. Military DTG Generator (Date-Time Group)
+  function getMilitaryDTG(d) {
+    d = d || new Date();
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const mm = String(d.getUTCMinutes()).padStart(2, '0');
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const mon = months[d.getUTCMonth()];
+    const yy = String(d.getUTCFullYear()).slice(-2);
+    return dd + hh + mm + 'Z ' + mon + ' ' + yy;
+  }
+
+  // 4. Dual Clock (Local + UTC Zulu) with Top-of-the-Hour Chime and Click-to-Copy DTG
+  const clockEl = document.getElementById('clock');
+  let lastChimeHour = -1;
+  if (clockEl) {
+    clockEl.title = 'Click to copy Military DTG';
+    const SVG_COPY = '<svg class="clk-copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+    clockEl.onclick = function () {
+      const dtg = getMilitaryDTG();
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(dtg).catch(() => {});
+      } catch (_) {}
+      if (typeof toast === 'function') toast('COPIED DTG: ' + dtg);
+    };
+
+    const updateDualClock = function () {
+      const d = new Date();
+      const lhh = String(d.getHours()).padStart(2, '0');
+      const lmm = String(d.getMinutes()).padStart(2, '0');
+      const uhh = String(d.getUTCHours()).padStart(2, '0');
+      const umm = String(d.getUTCMinutes()).padStart(2, '0');
+      const uss = String(d.getUTCSeconds()).padStart(2, '0');
+
+      clockEl.innerHTML =
+        '<div class="clk-top"><span>LOC ' + lhh + ':' + lmm + '</span>' + SVG_COPY + '</div>' +
+        '<span class="clk-utc">UTC ' + uhh + ':' + umm + ':' + uss + 'Z</span>';
+
+      // Hourly chime trigger at :00:00
+      const currentUTCMin = d.getUTCMinutes();
+      const currentUTCHour = d.getUTCHours();
+      if (currentUTCMin === 0 && lastChimeHour !== currentUTCHour) {
+        lastChimeHour = currentUTCHour;
+        playGShockChime();
+      }
+    };
+    updateDualClock();
+    setInterval(updateDualClock, 1000);
+  }
+
+  // 5. Operation Clock in Timers tab (Host Protected Reset)
+  const opState = { running: false, startedAt: 0, elapsedMs: 0 };
+  try {
+    const saved = JSON.parse(localStorage.getItem('atak-opclock') || 'null');
+    if (saved && typeof saved === 'object') {
+      opState.running = !!saved.running;
+      opState.startedAt = Number(saved.startedAt) || 0;
+      opState.elapsedMs = Number(saved.elapsedMs) || 0;
+    }
+  } catch (_) {}
+  const saveOp = () => { try { localStorage.setItem('atak-opclock', JSON.stringify(opState)); } catch (_) {} };
+  const getOpMs = () => opState.running ? opState.elapsedMs + Math.max(0, Date.now() - opState.startedAt) : opState.elapsedMs;
+  const fmtHMS = ms => {
+    const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sc = s % 60;
+    return [h, m, sc].map(n => String(n).padStart(2, '0')).join(':');
+  };
+
+  window.__atakBridge.on(function (d) {
+    if (d.kind === 'opclock' && d.op) {
+      opState.running = !!d.op.running;
+      opState.startedAt = Number(d.op.startedAt) || 0;
+      opState.elapsedMs = Number(d.op.elapsedMs) || 0;
+      saveOp();
+      renderOpClock();
+    }
+  });
+
+  function ensureOpClockUI() {
+    const tmList = document.getElementById('tmList');
+    if (!tmList || document.getElementById('atak-opclock')) return;
+    const box = document.createElement('div');
+    box.id = 'atak-opclock';
+    box.innerHTML =
+      '<div><div class="op-lbl">OPERATION CLOCK</div><div class="op-val" id="op-val">00:00:00</div></div>' +
+      '<div class="op-btns"><button type="button" class="sb" id="op-tog"></button><button type="button" class="sb alt" id="op-rst">↺</button></div>';
+    tmList.prepend(box);
+    box.querySelector('#op-tog').onclick = function () {
+      if (opState.running) { opState.elapsedMs = getOpMs(); opState.running = false; }
+      else { opState.startedAt = Date.now(); opState.running = true; }
+      saveOp(); window.__atakBridge.send({ kind: 'opclock', op: opState }); renderOpClock();
+    };
+    box.querySelector('#op-rst').onclick = function () {
+      if (typeof room !== 'undefined' && room && typeof hostOnly === 'function' && hostOnly()) {
+        if (typeof toast === 'function') toast('Only the room host can reset the OP clock');
+        return;
+      }
+      opState.running = false; opState.elapsedMs = 0; opState.startedAt = 0;
+      saveOp(); window.__atakBridge.send({ kind: 'opclock', op: opState }); renderOpClock();
+    };
+  }
+
+  function renderOpClock() {
+    const valEl = document.getElementById('op-val'), togEl = document.getElementById('op-tog');
+    const txt = fmtHMS(getOpMs());
+    if (valEl) valEl.textContent = txt;
+    if (togEl) togEl.textContent = opState.running ? '❚❚' : '▶';
+    const chips = document.getElementById('tchips');
+    if (chips) {
+      let chip = document.getElementById('atak-op-chip');
+      if (opState.running || opState.elapsedMs > 0) {
+        if (!chip) {
+          chip = document.createElement('div');
+          chip.id = 'atak-op-chip'; chip.className = 'tchip';
+          chip.style.cssText = 'border:1px solid #00ff41;color:#00ff41;';
+          chip.onclick = () => typeof openSide === 'function' && openSide('tm');
+          chips.prepend(chip);
+        }
+        chip.textContent = 'OP ' + txt;
+      } else if (chip) chip.remove();
+    }
+  }
+
+  if (typeof paintSide === 'function' && !paintSide._atakOp) {
+    const origPaintSide = paintSide;
+    paintSide = function (force) { origPaintSide(force); ensureOpClockUI(); renderOpClock(); };
+    paintSide._atakOp = true;
+  }
+  setInterval(renderOpClock, 500);
 })();
 </script>
 </body>

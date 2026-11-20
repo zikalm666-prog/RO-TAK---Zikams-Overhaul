@@ -247,7 +247,7 @@
 
       <div class="actions">
         <a href="/" class="btn btn-primary">REBOOT TO TACTICAL MAP</a>
-        <a href="https://github.com" class="btn btn-sec">GITHUB REPO</a>
+        <a href="https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul" class="btn btn-sec">GITHUB REPO</a>
       </div>
     </div>
   </div>
@@ -267,7 +267,7 @@
       const hh = String(now.getUTCHours()).padStart(2, '0');
       const mm = String(now.getUTCMinutes()).padStart(2, '0');
       const ss = String(now.getUTCSeconds()).padStart(2, '0');
-      if (zuluEl) zuluEl.textContent = 'UTC: ' + hh + ':' + mm + ':' + ss ;
+      if (zuluEl) zuluEl.textContent = 'UTC: ' + hh + ':' + mm + ':' + ss + 'Z' ;
     };
     tickZulu();
     setInterval(tickZulu, 1000);

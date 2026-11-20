@@ -31,6 +31,10 @@ Topographic backdrop with author attribution (`@zikaalm`), custom tactical icons
 
 ### 2. Full C2 HUD & Sidebar Controls
 Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom scale bar, and live **MGRS / HDG / RNG** telemetry.
+* **Dual Clock (Local + UTC Zulu):** Live local time with UTC Zulu (`HH:MM:SSZ`) underneath. Click the clock anytime to copy formatted **Military DTG** (`DDHHMMZ MON YY`) directly to your clipboard.
+* **Stealth Audio & G-Shock Chime:** Hourly top-of-the-hour chime (`pip-pip`) synthesized via Web Audio API, with a one-click **Stealth Audio Mute** button (`#audioTog`).
+* **MGRS Grid Toggle:** One-click toggle button next to compass and `G` hotkey to show or hide MGRS grid lines on the fly.
+* **Operation Clock (`OP CLOCK`):** Synchronized mission stopwatch in the Timers tab with live HUD status chip (`OP 00:00:00`) and Host-only reset protection.
 
 ![Full C2 HUD & Sidebar](screenshots/SC2.png)
 
@@ -55,6 +59,8 @@ Sharp monospace C2 header, top-right tool dock, center reticle, dynamic zoom sca
 | :--- | :--- |
 | **Deploy ATAK Radial Menu** | `Right-Click` (tap) on map |
 | **Pan Map** | `Right-Click + Drag` or `Middle-Click + Drag` |
+| **Toggle MGRS Grid** | `G` key or top-right Grid button |
+| **Copy Military DTG** | `Click` on Top-Left Clock (`#clock`) |
 | **Copy 8-Digit MGRS** | `Ctrl + Left-Click` on map |
 | **Measure Bearing & Range** | Select **Compass** tool + `Drag` |
 | **Zoom / Rotate Map** | `Scroll` / `Alt + Scroll` |

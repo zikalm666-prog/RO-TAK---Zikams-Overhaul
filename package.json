@@ -1,6 +1,6 @@
 {
   "name": "ro-tak-zikams-overhaul",
-  "version": "0.7.1b",
+  "version": "0.7.2b",
   "description": "ATAK-inspired C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, and Native Map Loader add-on for Banana's RO-TAK.",
   "main": "zikam-rotak-overhaul.user.js",
   "homepage": "https://github.com/zikalm666-prog/RO-TAK---Zikams-Overhaul",
