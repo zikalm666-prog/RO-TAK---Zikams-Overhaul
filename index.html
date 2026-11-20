@@ -6350,12 +6350,26 @@ counterBar.append(countTxt, modeBtn);
     #gridTog svg, #audioTog svg { width: 16px; height: 16px; }
   }
 
-  html.web #clock { line-height: 1.25 !important; text-align: left !important; padding: 4px 8px !important; cursor: pointer; transition: background 0.15s, border-color 0.15s; }
-  html.web #clock:hover { filter: brightness(1.2); }
-  #clock .clk-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-  #clock .clk-copy-icon { width: 10px; height: 10px; stroke: #64748b; fill: none; stroke-width: 2; flex-shrink: 0; transition: stroke 0.15s; }
+  html.web #clock, #clock {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    background: #0d100d !important;
+    border: 1px solid #2b382b !important;
+    border-left: 3px solid #00ff41 !important;
+    border-radius: 2px !important;
+    color: #e2e8f0 !important;
+    line-height: 1.3 !important;
+    text-align: left !important;
+    padding: 5px 8px !important;
+    font-family: monospace !important;
+    transition: border-color 0.15s, background 0.15s !important;
+  }
+  #clock::before { display: none !important; }
+  #clock:hover { border-color: #00ff41 !important; background: #141814 !important; }
+  #clock .clk-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 700; color: #e2e8f0; }
+  #clock .clk-copy-icon { width: 12px; height: 12px; stroke: #8a998a; fill: none; stroke-width: 2; flex-shrink: 0; transition: stroke 0.15s; }
   #clock:hover .clk-copy-icon { stroke: #00ff41; }
-  #clock .clk-utc { display: block; color: #00ff41; font-size: 9.5px; letter-spacing: 0.6px; margin-top: 1px; }
+  #clock .clk-utc { display: block; color: #00ff41; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; margin-top: 2px; }
 
   #atak-opclock {
     display: flex; align-items: center; justify-content: space-between; gap: 6px;
@@ -6504,13 +6518,42 @@ counterBar.append(countTxt, modeBtn);
     clockEl.title = 'Click to copy Military DTG';
     const SVG_COPY = '<svg class="clk-copy-icon" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 
-    clockEl.onclick = function () {
+    function copyDTG() {
       const dtg = getMilitaryDTG();
+      const notify = () => { if (typeof toast === 'function') toast('COPIED DTG: ' + dtg); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(dtg).then(notify).catch(function () {
+          fallbackCopy(dtg);
+        });
+      } else {
+        fallbackCopy(dtg);
+      }
+    }
+
+    function fallbackCopy(text) {
       try {
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(dtg).catch(() => {});
-      } catch (_) {}
-      if (typeof toast === 'function') toast('COPIED DTG: ' + dtg);
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        if (typeof toast === 'function') toast('COPIED DTG: ' + text);
+      } catch (_) {
+        if (typeof toast === 'function') toast('DTG: ' + text);
+      }
+    }
+
+    clockEl.onclick = function (e) {
+      if (e) e.stopPropagation();
+      copyDTG();
     };
+    clockEl.addEventListener('pointerdown', function (e) {
+      if (e) e.stopPropagation();
+    });
 
     const updateDualClock = function () {
       const d = new Date();
