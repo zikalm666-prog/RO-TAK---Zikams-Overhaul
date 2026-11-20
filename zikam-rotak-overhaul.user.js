@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RO-TAK - Zikam's Tactical Overhaul
 // @namespace    https://github.com
-// @version      0.7.2b
+// @version      0.7.21b
 // @description  RO-TAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/icon-192.png
@@ -29,9 +29,9 @@
   'use strict';
 
   // ------------------------------------------------------------------ config
-  const SCRIPT_VERSION = '0.7.2b';
+  const SCRIPT_VERSION = '0.7.21b';
   const REPO_SLUG = 'zikalm666-prog/RO-TAK---Zikams-Overhaul';
-  const REPO_REF = 'v0.7.2b';            
+  const REPO_REF = 'v0.7.21b';            
   const REPO_URL = 'https://github.com/' + REPO_SLUG;
   const RAW_ROOT = 'https://raw.githubusercontent.com/' + REPO_SLUG + '/';
   const DOWNLOAD_URL = RAW_ROOT + 'main/zikam-rotak-overhaul.user.js';
