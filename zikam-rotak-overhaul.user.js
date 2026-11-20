@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         RO-TAK - Zikam's Tactical Overhaul
 // @namespace    https://github.com
-// @version      0.7.21b
+// @version      0.7.22b
 // @description  RO-TAK C2 UI Overhaul, Right-Click Radial Menu, Guided 9-Line MEDEVAC/CAS, MGRS Telemetry & Native Maps for RO-TAK
 // @author       Zikam (@zikaalm)
 // @icon         https://raw.githubusercontent.com/zikalm666-prog/RO-TAK---Zikams-Overhaul/main/icon-192.png
@@ -28,10 +28,10 @@
 (function () {
   'use strict';
 
-  // ------------------------------------------------------------------ config
-  const SCRIPT_VERSION = '0.7.21b';
+  // config: release repo target, pinned version and cache timings
+  const SCRIPT_VERSION = '0.7.22b';
   const REPO_SLUG = 'zikalm666-prog/RO-TAK---Zikams-Overhaul';
-  const REPO_REF = 'v0.7.21b';            
+  const REPO_REF = 'v0.7.22b';            
   const REPO_URL = 'https://github.com/' + REPO_SLUG;
   const RAW_ROOT = 'https://raw.githubusercontent.com/' + REPO_SLUG + '/';
   const DOWNLOAD_URL = RAW_ROOT + 'main/zikam-rotak-overhaul.user.js';
@@ -66,7 +66,7 @@
   const log = (...a) => console.log('[RO-TAK Overhaul]', ...a);
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  // ------------------------------------------------------------ route checks
+  // route checks: skip iframes, api endpoints and raw static assets
   if (window.top !== window.self) return; // never run inside iframes
   const path = location.pathname;
   if (SKIP_PREFIXES.some((p) => path.startsWith(p))) return;
@@ -89,7 +89,7 @@
   const MODE = (status === 404 || (!status && !APP_ROUTES.includes(path))) ? '404' : 'app';
   log('started v' + SCRIPT_VERSION + ' | pin =', REPO_REF, '| mode =', MODE, '| path =', path, '| http status =', status || 'n/a');
 
-  // ------------------------------------------------------------- DOM ready
+  // dom ready promise
   const domReady = new Promise((resolve) => {
     if (document.readyState !== 'loading') return resolve();
     document.addEventListener('DOMContentLoaded', () => resolve(), { once: true });
@@ -97,7 +97,7 @@
   });
   try { window.stop(); } catch (_) {}
 
-  // --------------------------------------------------------- loading screen
+  // terminal splash screen while fetching github release
   function renderLoadingScreen() {
     const root = document.documentElement || document.appendChild(document.createElement('html'));
     root.innerHTML =
@@ -130,7 +130,7 @@
     box.append(retry, orig);
   }
 
-  // ------------------------------------------------------------ GM helpers
+  // tampermonkey network helpers with automatic retry
   function gmGet(url, opts) {
     opts = opts || {};
     return new Promise((resolve, reject) => {
@@ -177,7 +177,7 @@
     });
   }
 
-  // ------------------------------------------------ IndexedDB asset cache
+  // indexeddb cache: stores large 15k/16k map textures locally
   const DB_NAME = 'rotak-overhaul-cache', STORE = 'assets';
   let dbPromise = null;
   function openDb() {
@@ -217,7 +217,7 @@
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch (_) {}
   }
 
-  // ---------------------------------------------- progress (userscript -> page)
+  // bridge: relay download progress to the page map loader HUD
   let lastProg = 0;
   function reportProgress(p, info, force) {
     const now = Date.now();
@@ -227,7 +227,7 @@
     window.postMessage('rotak:prog:' + JSON.stringify(info), location.origin);
   }
 
-  // ---------------------------------------------- repo assets (cache + network)
+  // repo asset fetcher with background stale-while-revalidate
   function fetchRepoBlob(p, timeout, onProgress) {
     return gmGet(contentBase + p, { blob: true, timeout, onProgress }).then((res) => {
       const b = res.response;
@@ -273,9 +273,7 @@
     return got.blob;
   }
 
-  // ---------------------------------------------- lazy asset bridge (page <-> userscript)
-  // The page cannot read raw.githubusercontent.com (header CSP + CORS), so the page asks
-  // the userscript through postMessage and gets back a blob: URL (allowed by img-src).
+  // postmessage bridge: passes blob urls to bypass vercel csp safely
   const assetCache = new Map();
   function resolveAsset(p, mode, interactive) {
     const key = mode + ':' + p;
@@ -299,7 +297,7 @@
       .then((url) => reply({ id: req.id, url }), (err) => reply({ id: req.id, error: String((err && err.message) || err) }));
   });
 
-  // ------------------------------------------- last good build (GM storage)
+  // offline fallback: saves last verified working build to gm storage
   const goodKey = (file) => 'good:' + file;
   function looksValid(text) { return typeof text === 'string' && text.length > 3000 && /<\/html>/i.test(text); }
   function readGood(file) {
@@ -342,7 +340,7 @@
     }, HEALTH_WINDOW_MS);
   }
 
-  // ------------------------------------------------------- downloads (pinned)
+  // pinned release fetchers
   async function fetchSource(file) {
     const bust = () => (contentRef === 'main' ? '?t=' + Date.now() : '');
     try {
@@ -377,7 +375,7 @@
     return false;
   }
 
-  // ------------------------------------------------------ HTML rewrite
+  // html rewrite: patch csp headers and asset urls
   const ASSET_RE = /(?<![\w:.\/-])(?:\.\/|\/)?(images\/[\w\-.\/]+\.(?:png|jpe?g|webp|gif|ico)|icon-(?:192|512)\.png)(?![\w\-])/gi;
 
   function isEagerRepoAsset(p) {
@@ -428,7 +426,7 @@
     return html.replace(ASSET_RE, (m, p) => urls.get(p) || m);
   }
 
-  // ---- code that runs inside the page (context of the RO-TAK app) ----
+  // client hook: runs in page context for native map loading
   function pageHook(cfg) {
     var pending = {}, seq = 0;
     window.addEventListener('message', function (ev) {
@@ -474,7 +472,7 @@
     window.__ROTAK_OVERHAUL__ = { script: cfg.scriptVersion, pin: cfg.pin, ref: cfg.ref, fromCache: cfg.fromCache, repo: cfg.repoUrl };
   }
 
-  // ------------------------------------------------------------ small badges
+  // ui status badges (offline indicator & update banner)
   function showBadge(text, href, color) {
     try {
       const el = document.createElement(href ? 'a' : 'div');
@@ -487,7 +485,7 @@
     } catch (_) {}
   }
 
-  // ------------------------------------------------------------------ mount
+  // mount: replace document root and execute scripts sequentially
   function mountHtml(html) {
     const parsed = new DOMParser().parseFromString(html, 'text/html');
     const scripts = Array.from(parsed.querySelectorAll('script'));
@@ -526,7 +524,7 @@
     document.body.appendChild(s);
   }
 
-  // -------------------------------------------------------------------- run
+  // main bootstrap pipeline
   (async function run() {
     await domReady;
     renderLoadingScreen();

@@ -6332,7 +6332,6 @@ counterBar.append(countTxt, modeBtn);
 })();
 </script>
 
-<!-- === PARCHE 1: GRID TOGGLE + DUAL CLOCK (LOC/UTC) + OP CLOCK + G-SHOCK CHIME + AUDIO MUTE + DTG === -->
 <style>
   #gridTog, #audioTog {
     width: 22px; height: 22px; border: 0; border-radius: 2px !important;
@@ -6382,7 +6381,6 @@ counterBar.append(countTxt, modeBtn);
 </style>
 <script>
 (function () {
-  // Shared ATAK Bridge for room sync
   window.__atakBridge = window.__atakBridge || (function () {
     const handlers = [], layers = [], onAttaches = [];
     function send(payload) {
@@ -6423,10 +6421,8 @@ counterBar.append(countTxt, modeBtn);
     return { send, on, addLayer, onAttach, attach };
   })();
 
-  // 1. MGRS Grid Toggle & Audio Mute Buttons in #navbtns2
   const nav2 = document.getElementById('navbtns2');
   if (nav2 && typeof setg !== 'undefined') {
-    // Grid Toggle Button
     if (!document.getElementById('gridTog')) {
       const gBtn = document.createElement('button');
       gBtn.id = 'gridTog';
@@ -6449,7 +6445,6 @@ counterBar.append(countTxt, modeBtn);
       syncGridBtn();
     }
 
-    // Audio Mute Toggle Button
     if (!document.getElementById('audioTog')) {
       const aBtn = document.createElement('button');
       aBtn.id = 'audioTog';
@@ -6476,30 +6471,53 @@ counterBar.append(countTxt, modeBtn);
     }
   }
 
-  // 2. G-Shock Subtle Hourly Pip-Pip Chime (Synthesized via Web Audio API)
   let actx = null;
-  function playGShockChime() {
-    if (window.__atakAudioMuted) return;
+  function playGShockChime(force) {
+    if (!force && window.__atakAudioMuted) return;
     try {
       if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
       if (actx.state === 'suspended') actx.resume();
       const now = actx.currentTime;
-      [0, 0.12].forEach(offset => {
-        const osc = actx.createOscillator();
-        const gain = actx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(2400, now + offset);
-        gain.gain.setValueAtTime(0.04, now + offset);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.045);
-        osc.connect(gain);
-        gain.connect(actx.destination);
-        osc.start(now + offset);
-        osc.stop(now + offset + 0.05);
+      const pipDur = 0.032;
+      const delay = 0.22;
+
+      [0, delay].forEach(offset => {
+        const t0 = now + offset;
+        const t1 = t0 + pipDur;
+
+        const pipGain = actx.createGain();
+        pipGain.gain.setValueAtTime(0.08, t0);
+        pipGain.gain.setValueAtTime(0.08, t1 - 0.003);
+        pipGain.gain.linearRampToValueAtTime(0, t1);
+        pipGain.connect(actx.destination);
+
+        const osc1 = actx.createOscillator();
+        const gain1 = actx.createGain();
+        osc1.type = 'square';
+        osc1.frequency.setValueAtTime(2048, t0);
+        gain1.gain.setValueAtTime(0.7, t0);
+        osc1.connect(gain1);
+        gain1.connect(pipGain);
+        osc1.start(t0);
+        osc1.stop(t1);
+
+        const osc2 = actx.createOscillator();
+        const gain2 = actx.createGain();
+        osc2.type = 'square';
+        osc2.frequency.setValueAtTime(4096, t0);
+        gain2.gain.setValueAtTime(0.35, t0);
+        osc2.connect(gain2);
+        gain2.connect(pipGain);
+        osc2.start(t0);
+        osc2.stop(t1);
       });
     } catch (_) {}
   }
+  window.testGShockChime = function () {
+    playGShockChime(true);
+    if (typeof toast === 'function') toast('TEST CHIME TRIGGERED');
+  };
 
-  // 3. Military DTG Generator (Date-Time Group)
   function getMilitaryDTG(d) {
     d = d || new Date();
     const dd = String(d.getUTCDate()).padStart(2, '0');
@@ -6511,7 +6529,6 @@ counterBar.append(countTxt, modeBtn);
     return dd + hh + mm + 'Z ' + mon + ' ' + yy;
   }
 
-  // 4. Dual Clock (Local + UTC Zulu) with Top-of-the-Hour Chime and Click-to-Copy DTG
   const clockEl = document.getElementById('clock');
   let lastChimeHour = -1;
   if (clockEl) {
@@ -6567,7 +6584,6 @@ counterBar.append(countTxt, modeBtn);
         '<div class="clk-top"><span>LOC ' + lhh + ':' + lmm + '</span>' + SVG_COPY + '</div>' +
         '<span class="clk-utc">UTC ' + uhh + ':' + umm + ':' + uss + 'Z</span>';
 
-      // Hourly chime trigger at :00:00
       const currentUTCMin = d.getUTCMinutes();
       const currentUTCHour = d.getUTCHours();
       if (currentUTCMin === 0 && lastChimeHour !== currentUTCHour) {
@@ -6579,7 +6595,6 @@ counterBar.append(countTxt, modeBtn);
     setInterval(updateDualClock, 1000);
   }
 
-  // 5. Operation Clock in Timers tab (Host Protected Reset)
   const opState = { running: false, startedAt: 0, elapsedMs: 0 };
   try {
     const saved = JSON.parse(localStorage.getItem('atak-opclock') || 'null');
