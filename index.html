@@ -5218,52 +5218,6 @@ try { if (!document.documentElement.classList.contains('land') && !localStorage.
   });
   stage.addEventListener('wheel', function() { setTimeout(updateScaleDisplay, 20); }, { passive: true });
   setTimeout(updateScaleDisplay, 500);
-      
-  const RADIAL_IDS = Array.of('b-sym', 'b-wp', 'b-meas', 'b-ping', 'b-draw', 'b-text', 'b-eraser', 'b-pan');
-  let rDown = null;
-
-  stage.addEventListener('pointerdown', function(e) {
-    if (e.button === 2) rDown = { x: e.clientX, y: e.clientY };
-  });
-
-  stage.addEventListener('contextmenu', function(e) {
-    e.preventDefault();
-    if (!rDown) return;
-    const moved = Math.hypot(e.clientX - rDown.x, e.clientY - rDown.y);
-    rDown = null;
-    if (moved > 6) return;
-
-    radial.innerHTML = '';
-    const btns = RADIAL_IDS.map(function(id) { return document.getElementById(id); }).filter(Boolean);
-    const radius = 68;
-
-    btns.forEach(function(origBtn, i) {
-      const angle = (i / btns.length) * Math.PI * 2 - Math.PI / 2;
-      const x = 95 + radius * Math.cos(angle);
-      const y = 95 + radius * Math.sin(angle);
-
-      const petal = document.createElement('button');
-      petal.className = 'atak-petal';
-      petal.style.left = x + 'px';
-      petal.style.top = y + 'px';
-      petal.title = origBtn.title || '';
-      petal.innerHTML = origBtn.innerHTML;
-
-      petal.onclick = function() {
-        origBtn.click();
-        radial.classList.remove('open');
-      };
-      radial.appendChild(petal);
-    });
-
-    radial.style.left = e.clientX + 'px';
-    radial.style.top = e.clientY + 'px';
-    radial.classList.add('open');
-  });
-
-  document.addEventListener('pointerdown', function(e) {
-    if (e.button === 0 && !radial.contains(e.target)) radial.classList.remove('open');
-  });
     
     function injectCalibIOButtons() {
     if (!document.getElementById('atak-marks-row')) {
@@ -6672,6 +6626,724 @@ counterBar.append(countTxt, modeBtn);
     paintSide._atakOp = true;
   }
   setInterval(renderOpClock, 500);
+})();
+</script>
+<style>
+  #nl-ping-tgt { background: #142214 !important; border-color: #00ff41 !important; color: #00ff41 !important; }
+  #nl-ping-tgt:hover { background: #00ff41 !important; color: #050805 !important; }
+  #atak-route-summary {
+    position: absolute; top: 158px; right: 26px; width: 225px; max-height: 220px; overflow-y: auto;
+    background: rgba(9, 11, 9, 0.92); border: 1px solid #2b382b; border-right: 3px solid #00ff41;
+    border-radius: 2px; padding: 6px 8px; font-family: monospace; font-size: 10px; color: #cbd5e1;
+    z-index: 2; display: none; flex-direction: column; gap: 5px; pointer-events: auto;
+  }
+  html.web #atak-route-summary { top: calc(158px + env(safe-area-inset-top)); right: calc(14px + env(safe-area-inset-right)); }
+  html.desk #atak-route-summary { top: 148px; right: 62px; }
+  #stage.nlopen #atak-route-summary { display: none !important; }
+  #atak-route-summary .rs-hdr { font-size: 9.5px; font-weight: 800; color: #00ff41; letter-spacing: 0.8px; border-bottom: 1px solid #243024; padding-bottom: 3px; }
+  #atak-route-summary .rs-row { display: flex; flex-direction: column; gap: 1px; border-bottom: 1px solid #1a221a; padding-bottom: 4px; }
+  #atak-route-summary .rs-row:last-child { border-bottom: 0; padding-bottom: 0; }
+  #atak-route-summary .rs-mgrs { color: #fff; font-weight: 700; }
+  #atak-route-summary .rs-meta { color: #94a3b8; font-size: 9.5px; }
+  #atak-route-summary .rs-name { color: #ff9900; font-weight: 700; }
+</style>
+<script>
+(function () {
+  window.__atakBridge = window.__atakBridge || (function () {
+    const handlers = [], layers = [], onAttaches = [];
+    function send(payload) {
+      if (typeof room === 'undefined' || !room || typeof channel === 'undefined' || !channel) return;
+      try {
+        const r = channel.send({ type: 'broadcast', event: 'atak_ext', payload: Object.assign({ from: clientId }, payload) });
+        if (r && r.catch) r.catch(() => {});
+      } catch (_) {}
+    }
+    function on(fn) { handlers.push(fn); }
+    function addLayer(fn) { layers.push(fn); }
+    function onAttach(fn) { onAttaches.push(fn); }
+    function attach() {
+      if (typeof channel === 'undefined' || !channel || channel._atakExtHooked) return;
+      channel._atakExtHooked = true;
+      channel.on('broadcast', { event: 'atak_ext' }, function (msg) {
+        const d = msg && msg.payload;
+        if (!d || d.from === clientId) return;
+        handlers.forEach(fn => { try { fn(d); } catch (_) {} });
+      });
+      onAttaches.forEach(fn => { try { fn(); } catch (_) {} });
+    }
+    if (typeof trackMe === 'function' && !trackMe._atakBridge) {
+      const orig = trackMe; trackMe = function () { orig(); attach(); }; trackMe._atakBridge = true;
+    }
+    if (typeof draw === 'function' && !draw._atakBridge) {
+      const origDraw = draw;
+      draw = function () {
+        origDraw();
+        if (typeof ctx !== 'undefined' && typeof c !== 'undefined' && ctx.canvas === c) {
+          layers.forEach(fn => { try { fn(); } catch (_) {} });
+        }
+      };
+      draw._atakBridge = true;
+    }
+    return { send, on, addLayer, onAttach, attach };
+  })();
+
+  const stage = document.getElementById('stage');
+  let hoverConnInfo = null, reportPulses = [], pulseRaf = 0;
+
+  let rsBox = document.getElementById('atak-route-summary');
+  if (stage && !rsBox) {
+    rsBox = document.createElement('div');
+    rsBox.id = 'atak-route-summary';
+    stage.appendChild(rsBox);
+    rsBox.addEventListener('pointerdown', e => e.stopPropagation());
+  }
+
+  function drawHudPill(wx, wy, line1, line2, line3, accent) {
+    const u = 1 / v.s;
+    ctx.save(); ctx.translate(wx, wy); ctx.rotate(-v.r);
+    ctx.font = '700 ' + (11 * u) + 'px monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const w1 = ctx.measureText(line1).width;
+    const w2 = line2 ? ctx.measureText(line2).width : 0;
+    const w3 = line3 ? ctx.measureText(line3).width : 0;
+    const lines = 1 + (line2 ? 1 : 0) + (line3 ? 1 : 0);
+    const bw = Math.max(w1, w2, w3) + 16 * u, bh = (lines === 3 ? 46 : lines === 2 ? 32 : 18) * u;
+    ctx.fillStyle = 'rgba(9,11,9,0.95)'; ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
+    ctx.strokeStyle = accent || '#00ff41'; ctx.lineWidth = 1.2 * u; ctx.strokeRect(-bw / 2, -bh / 2, bw, bh);
+    ctx.fillStyle = accent || '#00ff41';
+    const y1 = lines === 3 ? -14 * u : lines === 2 ? -7 * u : 0;
+    ctx.fillText(line1, 0, y1);
+    if (line2) { ctx.fillStyle = '#e2e8f0'; ctx.fillText(line2, 0, lines === 3 ? 0 : 8 * u); }
+    if (line3) { ctx.fillStyle = '#94a3b8'; ctx.fillText(line3, 0, 14 * u); }
+    ctx.restore();
+  }
+
+  function connLengthPx(it) {
+    const pts = connPts(it); let len = 0;
+    for (let i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    return len;
+  }
+
+  function chainRoutePx(startConn) {
+    const visited = new Set([startConn.id]), queue = [startConn];
+    let totalPx = connLengthPx(startConn);
+    while (queue.length) {
+      const cItem = queue.shift();
+      [cItem.ca, cItem.cb].forEach(nodeId => {
+        if (!nodeId) return;
+        const node = items.find(i => i.id === nodeId);
+        if (!node || node.type !== 'wp') return;
+        items.forEach(other => {
+          if (other.type === 'conn' && !visited.has(other.id) && (other.ca === nodeId || other.cb === nodeId)) {
+            visited.add(other.id); totalPx += connLengthPx(other); queue.push(other);
+          }
+        });
+      });
+    }
+    return { totalPx, legs: visited.size };
+  }
+
+  function fmtDist(px) {
+    const mpp = parseFloat(localStorage.getItem('atak-mpp') || '0') || 0;
+    if (!(mpp > 0)) return Math.round(px) + ' px';
+    const m = Math.round(px * mpp);
+    return m >= 1000 ? (m / 1000).toFixed(2) + ' km' : m + ' m';
+  }
+
+  function fmtDur(sec) {
+    if (sec < 60) return Math.max(1, Math.round(sec)) + 's';
+    const m = Math.round(sec / 60);
+    if (m < 60) return m + 'm';
+    const h = Math.floor(m / 60), rm = m % 60;
+    return h + 'h' + (rm ? rm + 'm' : '');
+  }
+
+  function fmtEta(px) {
+    const mpp = parseFloat(localStorage.getItem('atak-mpp') || '0') || 0;
+    if (!(mpp > 0)) return '';
+    const m = px * mpp;
+    return 'FOOT ' + fmtDur(m / 1.4) + ' · VEH ' + fmtDur(m / 14) + ' · HELO ' + fmtDur(m / 60);
+  }
+
+  function updateRouteSummary() {
+    if (!rsBox || typeof items === 'undefined') return;
+    const nlEl = document.getElementById('nl');
+    if (nlEl && nlEl.classList.contains('open')) { rsBox.style.display = 'none'; return; }
+    const conns = items.filter(i => i.type === 'conn');
+    if (!conns.length) { rsBox.style.display = 'none'; return; }
+    rsBox.innerHTML = '<div class="rs-hdr">ROUTE SUMMARY (' + conns.length + ')</div>';
+    conns.forEach(it => {
+      const pts = connPts(it), a = pts[0], b = pts[pts.length - 1];
+      const px = connLengthPx(it);
+      const hdg = String((((Math.round(Math.atan2(b[0] - a[0], -(b[1] - a[1])) * 180 / Math.PI) % 360) + 360) % 360)).padStart(3, '0');
+      const gA = (typeof grid !== 'undefined' && grid) ? fmt8(toGrid(a)) : '---- ----';
+      const gB = (typeof grid !== 'undefined' && grid) ? fmt8(toGrid(b)) : '---- ----';
+      const ta = it.ca && items.find(i => i.id === it.ca), tb = it.cb && items.find(i => i.id === it.cb);
+      const lbl = [ta && ta.label, tb && tb.label].filter(Boolean).join(' -> ');
+      const eta = fmtEta(px);
+      const row = document.createElement('div');
+      row.className = 'rs-row';
+      row.innerHTML =
+        '<div class="rs-mgrs">' + gA + ' -> ' + gB + '</div>' +
+        '<div class="rs-meta">' + fmtDist(px) + ' (' + hdg + '°T)' + (eta ? ' · ' + eta : '') + '</div>' +
+        (lbl ? '<div class="rs-name">' + lbl + '</div>' : '');
+      rsBox.appendChild(row);
+    });
+    rsBox.style.display = 'flex';
+  }
+
+  stage.addEventListener('pointermove', function (e) {
+    if (typeof world !== 'function' || typeof hit !== 'function' || typeof items === 'undefined') return;
+    const p = world(e), tol = 10 / v.s;
+    let found = null;
+    for (let i = items.length - 1; i >= 0; i--) {
+      if (items[i].type === 'conn' && hit(items[i], p, tol)) { found = items[i]; break; }
+    }
+    if (found) {
+      if (hoverConnInfo && hoverConnInfo.id === found.id && Math.hypot(p[0] - hoverConnInfo.x, p[1] - hoverConnInfo.y) * v.s < 4) return;
+      const pts = connPts(found), a = pts[0], b = pts[pts.length - 1];
+      const hdg = (((Math.round(Math.atan2(b[0] - a[0], -(b[1] - a[1])) * 180 / Math.PI) % 360) + 360) % 360);
+      const segPx = connLengthPx(found), route = chainRoutePx(found);
+      const ta = found.ca && items.find(i => i.id === found.ca), tb = found.cb && items.find(i => i.id === found.cb);
+      const wpOnly = (ta && ta.type === 'wp') || (tb && tb.type === 'wp');
+      const totalPx = (route.legs > 1 && wpOnly) ? route.totalPx : segPx;
+      hoverConnInfo = {
+        id: found.id, x: p[0], y: p[1],
+        legTxt: fmtDist(segPx) + '  (' + String(hdg).padStart(3, '0') + '°T)',
+        routeTxt: (route.legs > 1 && wpOnly) ? ('ROUTE (' + route.legs + '): ' + fmtDist(route.totalPx)) : '',
+        etaTxt: fmtEta(totalPx)
+      };
+      draw();
+    } else if (hoverConnInfo) {
+      hoverConnInfo = null;
+      draw();
+    }
+  });
+
+  function addReportPulse(x, y, tag, gridStr, by) {
+    if (reportPulses.length >= 8) reportPulses.shift();
+    reportPulses.push({ x, y, tag: tag || 'TARGET', grid: gridStr || '', by: by || '', t0: performance.now() });
+    if (!pulseRaf) pulseRaf = requestAnimationFrame(function tickPulse() {
+      const now = performance.now();
+      reportPulses = reportPulses.filter(rp => now - rp.t0 < 15000);
+      draw();
+      pulseRaf = reportPulses.length ? requestAnimationFrame(tickPulse) : 0;
+    });
+  }
+
+  window.__atakBridge.on(d => {
+    if (d.kind === 'nlping') addReportPulse(d.x, d.y, d.tag, d.grid, d.by);
+  });
+
+  window.__atakBridge.addLayer(function () {
+    const u = 1 / v.s, now = performance.now();
+    updateRouteSummary();
+    if (typeof cur !== 'undefined' && cur && cur.type === 'conn') {
+      const px = connLengthPx(cur);
+      if (px * v.s > 12) {
+        const pts = connPts(cur), mid = [(pts[0][0] + pts[pts.length - 1][0]) / 2, (pts[0][1] + pts[pts.length - 1][1]) / 2];
+        drawHudPill(mid[0], mid[1] - 18 * u, fmtDist(px), '', '', '#00ff41');
+      }
+    }
+    if (hoverConnInfo) {
+      drawHudPill(hoverConnInfo.x, hoverConnInfo.y - 28 * u, hoverConnInfo.legTxt, hoverConnInfo.routeTxt, hoverConnInfo.etaTxt, '#00ff41');
+    }
+    const cw = c.width / dpr, ch = c.height / dpr;
+    const co = Math.cos(v.r), si = Math.sin(v.r);
+    reportPulses.forEach(rp => {
+      const a = now - rp.t0, ph = (a % 1100) / 1100, fade = Math.max(0, 1 - a / 15000);
+      ctx.save();
+      ctx.strokeStyle = '#ff9900'; ctx.globalAlpha = (1 - ph) * fade; ctx.lineWidth = 3 * u;
+      ctx.beginPath(); ctx.arc(rp.x, rp.y, (14 + 62 * ph) * u, 0, Math.PI * 2); ctx.stroke();
+      ctx.globalAlpha = Math.min(1, fade * 1.5);
+      const r = 14 * u;
+      ctx.strokeStyle = '#ff3b3b'; ctx.lineWidth = 2.5 * u;
+      ctx.beginPath();
+      ctx.moveTo(rp.x, rp.y - r); ctx.lineTo(rp.x + r, rp.y);
+      ctx.lineTo(rp.x, rp.y + r); ctx.lineTo(rp.x - r, rp.y); ctx.closePath(); ctx.stroke();
+      drawHudPill(rp.x, rp.y - 28 * u, rp.tag + (rp.grid ? ' [' + rp.grid + ']' : ''), rp.by ? 'BY: ' + rp.by : '', '', '#ff9900');
+      ctx.restore();
+
+      const sx = v.x + v.s * (co * rp.x - si * rp.y);
+      const sy = v.y + v.s * (si * rp.x + co * rp.y);
+      const pad = 26;
+      if (sx < pad || sx > cw - pad || sy < pad || sy > ch - pad) {
+        const cx = cw / 2, cy = ch / 2;
+        const ang = Math.atan2(sy - cy, sx - cx);
+        const ix = Math.max(pad, Math.min(cw - pad, cx + Math.cos(ang) * (cw / 2 - pad)));
+        const iy = Math.max(pad, Math.min(ch - pad, cy + Math.sin(ang) * (ch / 2 - pad)));
+        ctx.save();
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.translate(ix, iy);
+        ctx.rotate(ang);
+        ctx.globalAlpha = Math.min(1, fade * 1.4);
+        ctx.fillStyle = '#ff9900';
+        ctx.beginPath();
+        ctx.moveTo(10, 0); ctx.lineTo(-7, -6); ctx.lineTo(-4, 0); ctx.lineTo(-7, 6);
+        ctx.closePath(); ctx.fill();
+        ctx.restore();
+      }
+    });
+  });
+
+  const nlFoot = document.getElementById('nlFoot');
+  if (nlFoot && !document.getElementById('nl-ping-tgt')) {
+    const pingBtn = document.createElement('button');
+    pingBtn.id = 'nl-ping-tgt'; pingBtn.type = 'button'; pingBtn.textContent = 'PING TGT';
+    pingBtn.title = 'Drop a temporary high-visibility target marker using the report MGRS';
+    pingBtn.onclick = function () {
+      if (typeof grid === 'undefined' || !grid || typeof img === 'undefined' || !img) return toast('Calibrate grid first');
+      const fieldIdx = { m: 'l0', c: 'l6', s: 'l2', f: 'l2', r: 'l2' }[nlTab];
+      const tagMap = { m: 'MEDEVAC LZ', c: 'CAS TARGET', s: 'SALUTE', f: 'CFF TARGET', r: 'SITREP' };
+      const parsed = fieldIdx && nlD[nlTab] ? parseGrid(nlD[nlTab][fieldIdx]) : null;
+      if (!parsed) return toast('Enter or pick a valid MGRS in the report');
+      const wp = fromGrid(parsed), g8 = fmt8(parsed), by = myNick || 'OP';
+      addReportPulse(wp[0], wp[1], tagMap[nlTab], g8, by);
+      window.__atakBridge.send({ kind: 'nlping', x: wp[0], y: wp[1], tag: tagMap[nlTab], grid: g8, by });
+      centerOn(wp, false);
+      toast(tagMap[nlTab] + ' marked at ' + g8);
+    };
+    nlFoot.insertBefore(pingBtn, document.getElementById('nlClear'));
+  }
+})();
+</script>
+<style>
+  #atak-radial {
+    width: 380px !important; height: 380px !important;
+    background: transparent !important; border: 0 !important; box-shadow: none !important;
+    overflow: visible !important; pointer-events: none;
+  }
+  #atak-radial::after { display: none !important; }
+  #atak-radial svg.atak-wheel { width: 380px; height: 380px; overflow: visible; filter: drop-shadow(0 6px 22px rgba(0, 0, 0, 0.85)); }
+  .atak-wedge { cursor: pointer; pointer-events: auto; }
+  .atak-wedge path.w-bg {
+    fill: rgba(11, 15, 11, 0.94); stroke: #2c382c; stroke-width: 1.5;
+    transition: fill 0.12s ease, stroke 0.12s ease;
+  }
+  .atak-wedge:hover path.w-bg, .atak-wedge.sub-open path.w-bg {
+    fill: rgba(0, 255, 65, 0.18); stroke: #00ff41; stroke-width: 2;
+  }
+  .atak-wedge.outer path.w-bg { fill: rgba(15, 20, 15, 0.96); stroke: #2c382c; stroke-width: 1.4; }
+  .atak-wedge.outer:hover path.w-bg { fill: rgba(0, 255, 65, 0.18); stroke: #00ff41; stroke-width: 2; }
+  .atak-wedge.outer.tic path.w-bg { stroke: #ff3b3b; }
+  .atak-wedge.outer.tic:hover path.w-bg { fill: rgba(255, 59, 59, 0.25); stroke: #ff3b3b; }
+  .atak-wedge .w-fo { pointer-events: none; }
+  .atak-wedge .w-cell {
+    width: 100%; height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+    color: #e2ece2; font: 700 8.5px monospace; letter-spacing: 0.4px; text-align: center;
+  }
+  .atak-wedge:hover .w-cell, .atak-wedge.sub-open .w-cell { color: #00ff41; }
+  .atak-wedge.outer:hover .w-cell { color: #00ff41; }
+  .atak-wedge.outer.tic:hover .w-cell { color: #ff3b3b; }
+  .atak-wedge .w-cell svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .atak-wedge .w-arr { fill: #00ff41; pointer-events: none; }
+  .atak-hub-bg { fill: #090b09; stroke: #ff9900; stroke-width: 2; pointer-events: auto; cursor: default; }
+  .atak-hub-txt { fill: #ff9900; font: 800 10px monospace; letter-spacing: 1.2px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  #atak-pingbar {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 54px;
+    display: none; align-items: center; gap: 4px; padding: 4px;
+    background: rgba(20, 20, 22, 0.94); border: 1px solid #2b382b; border-radius: 999px; z-index: 3;
+  }
+  #atak-pingbar.open { display: flex; }
+  html.web #atak-pingbar { left: 0; right: 0; margin: 0 auto; transform: none; width: max-content; bottom: calc(var(--tb, 44px) + 18px + env(safe-area-inset-bottom)); }
+  #atak-pingbar button {
+    width: 32px; height: 32px; border: 0; border-radius: 50%; background: transparent; color: #ddd;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  #atak-pingbar button:hover { background: #333; }
+  #atak-pingbar button.on { background: #00ff41; color: #050805; }
+  #atak-pingbar button.tic.on { background: #ff3b3b; color: #fff; }
+  #atak-pingbar svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+<script>
+(function () {
+  window.__atakBridge = window.__atakBridge || (function () {
+    const handlers = [], layers = [], onAttaches = [];
+    function send(payload) {
+      if (typeof room === 'undefined' || !room || typeof channel === 'undefined' || !channel) return;
+      try {
+        const r = channel.send({ type: 'broadcast', event: 'atak_ext', payload: Object.assign({ from: clientId }, payload) });
+        if (r && r.catch) r.catch(() => {});
+      } catch (_) {}
+    }
+    function on(fn) { handlers.push(fn); }
+    function addLayer(fn) { layers.push(fn); }
+    function onAttach(fn) { onAttaches.push(fn); }
+    function attach() {
+      if (typeof channel === 'undefined' || !channel || channel._atakExtHooked) return;
+      channel._atakExtHooked = true;
+      channel.on('broadcast', { event: 'atak_ext' }, function (msg) {
+        const d = msg && msg.payload;
+        if (!d || d.from === clientId) return;
+        handlers.forEach(fn => { try { fn(d); } catch (_) {} });
+      });
+      onAttaches.forEach(fn => { try { fn(); } catch (_) {} });
+    }
+    if (typeof trackMe === 'function' && !trackMe._atakBridge) {
+      const orig = trackMe; trackMe = function () { orig(); attach(); }; trackMe._atakBridge = true;
+    }
+    if (typeof draw === 'function' && !draw._atakBridge) {
+      const origDraw = draw;
+      draw = function () {
+        origDraw();
+        if (typeof ctx !== 'undefined' && typeof c !== 'undefined' && ctx.canvas === c) {
+          layers.forEach(fn => { try { fn(); } catch (_) {} });
+        }
+      };
+      draw._atakBridge = true;
+    }
+    return { send, on, addLayer, onAttach, attach };
+  })();
+
+  const stage = document.getElementById('stage');
+  const radial = document.getElementById('atak-radial');
+  let activeSubPing = 'std', subPings = [], subRaf = 0;
+  let rDownPt = null, hoverTimer = null, activeSubHost = null;
+  let lastWorldRC = null, hitItemRC = null;
+  let pActx = null;
+
+  function playPingSound(kind) {
+    if (window.__atakAudioMuted) return;
+    try {
+      if (!pActx) pActx = new (window.AudioContext || window.webkitAudioContext)();
+      if (pActx.state === 'suspended') pActx.resume();
+      const now = pActx.currentTime;
+      const playTone = (startOff, freq, dur, wave, vol) => {
+        const osc = pActx.createOscillator(), g = pActx.createGain();
+        osc.type = wave;
+        osc.frequency.setValueAtTime(freq, now + startOff);
+        g.gain.setValueAtTime(vol, now + startOff);
+        g.gain.setValueAtTime(vol, now + startOff + dur - 0.004);
+        g.gain.linearRampToValueAtTime(0, now + startOff + dur);
+        osc.connect(g); g.connect(pActx.destination);
+        osc.start(now + startOff); osc.stop(now + startOff + dur + 0.005);
+      };
+      if (kind === 'tic') {
+        playTone(0,    1320, 0.055, 'sawtooth', 0.075);
+        playTone(0.07, 990,  0.070, 'sawtooth', 0.075);
+        playTone(0.18, 1320, 0.055, 'sawtooth', 0.075);
+        playTone(0.25, 990,  0.075, 'sawtooth', 0.075);
+      } else {
+        playTone(0, 660, 0.030, 'square', 0.03);
+      }
+    } catch (_) {}
+  }
+
+  const SUBPING_META = {
+    obs: { label: 'OBSERVE', color: '#38bdf8' },
+    atk: { label: 'ATTACK',  color: '#ef4444' },
+    def: { label: 'DEFEND',  color: '#3b82f6' },
+    mov: { label: 'MOVE',    color: '#00ff41' },
+    tic: { label: 'TIC',     color: '#ff3b3b' }
+  };
+
+  function addSubPing(x, y, t, col, nm) {
+    if (!SUBPING_META[t]) return;
+    if (subPings.length >= 16) subPings.shift();
+    subPings.push({ x, y, t, col: col || SUBPING_META[t].color, nm: nm || '', t0: performance.now() });
+    playPingSound(t);
+    if (!subRaf) subRaf = requestAnimationFrame(function tickSub() {
+      const now = performance.now();
+      subPings = subPings.filter(p => now - p.t0 < (p.t === 'tic' ? 18000 : 10000));
+      draw();
+      subRaf = subPings.length ? requestAnimationFrame(tickSub) : 0;
+    });
+  }
+
+  window.__atakBridge.on(d => {
+    if (d.kind === 'subping') addSubPing(d.x, d.y, d.t, d.c, d.n);
+  });
+
+  if (typeof sendPing === 'function' && !sendPing._atakSub) {
+    const origSendPing = sendPing;
+    sendPing = function (p) {
+      if (activeSubPing === 'std') return origSendPing(p);
+      const meta = SUBPING_META[activeSubPing];
+      addSubPing(p[0], p[1], activeSubPing, meta.color, '');
+      window.__atakBridge.send({ kind: 'subping', x: p[0], y: p[1], t: activeSubPing, c: meta.color, n: myNick || '' });
+      if (typeof room !== 'undefined' && room && typeof channel !== 'undefined' && channel) {
+        try { channel.send({ type: 'broadcast', event: 'ping', payload: { id: clientId, x: p[0], y: p[1], c: meta.color, n: '[' + meta.label + '] ' + (myNick || '') } }); } catch (_) {}
+      }
+    };
+    sendPing._atakSub = true;
+  }
+
+  window.__atakBridge.addLayer(function () {
+    const u = 1 / v.s, now = performance.now();
+    subPings.forEach(p => {
+      const maxT = p.t === 'tic' ? 18000 : 10000;
+      const a = now - p.t0, ph = (a % (p.t === 'tic' ? 900 : 1500)) / (p.t === 'tic' ? 900 : 1500), fade = Math.max(0, 1 - a / maxT);
+      ctx.save();
+      ctx.strokeStyle = p.col; ctx.globalAlpha = (1 - ph) * fade * 0.85; ctx.lineWidth = (p.t === 'tic' ? 3 : 2.5) * u;
+      ctx.beginPath(); ctx.arc(p.x, p.y, (10 + 42 * ph) * u, 0, Math.PI * 2); ctx.stroke();
+
+      ctx.globalAlpha = Math.min(1, fade * 1.4);
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(-v.r);
+      ctx.strokeStyle = p.col; ctx.fillStyle = p.col; ctx.lineWidth = 2.2 * u; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      if (p.t === 'obs') {
+        ctx.beginPath(); ctx.moveTo(-11 * u, 0); ctx.quadraticCurveTo(0, -10 * u, 11 * u, 0); ctx.quadraticCurveTo(0, 10 * u, -11 * u, 0); ctx.closePath();
+        ctx.fillStyle = 'rgba(8,12,16,0.85)'; ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, 3.2 * u, 0, Math.PI * 2); ctx.fillStyle = p.col; ctx.fill();
+      } else if (p.t === 'atk') {
+        ctx.beginPath(); ctx.moveTo(-8 * u, 8 * u); ctx.lineTo(8 * u, -8 * u);
+        ctx.moveTo(-6 * u, 1 * u); ctx.lineTo(-1 * u, 6 * u);
+        ctx.moveTo(4 * u, -8 * u); ctx.lineTo(8 * u, -8 * u); ctx.lineTo(8 * u, -4 * u); ctx.stroke();
+      } else if (p.t === 'def') {
+        ctx.beginPath(); ctx.moveTo(0, -10 * u); ctx.lineTo(9 * u, -6 * u); ctx.lineTo(8 * u, 3 * u);
+        ctx.quadraticCurveTo(0, 11 * u, 0, 11 * u); ctx.quadraticCurveTo(0, 11 * u, -8 * u, 3 * u); ctx.lineTo(-9 * u, -6 * u); ctx.closePath();
+        ctx.fillStyle = 'rgba(8,12,16,0.85)'; ctx.fill(); ctx.stroke();
+      } else if (p.t === 'mov') {
+        ctx.beginPath(); ctx.moveTo(-8 * u, 8 * u); ctx.lineTo(8 * u, -8 * u);
+        ctx.moveTo(0, -8 * u); ctx.lineTo(8 * u, -8 * u); ctx.lineTo(8 * u, 0); ctx.stroke();
+      } else if (p.t === 'tic') {
+        ctx.beginPath(); ctx.moveTo(0, -11 * u); ctx.lineTo(10 * u, 8 * u); ctx.lineTo(-10 * u, 8 * u); ctx.closePath();
+        ctx.fillStyle = 'rgba(20,4,4,0.9)'; ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, -4 * u); ctx.lineTo(0, 2 * u); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 5 * u, 1 * u, 0, Math.PI * 2); ctx.fillStyle = p.col; ctx.fill();
+      }
+      const lbl = p.t === 'tic' ? 'TIC' : (SUBPING_META[p.t].label + (p.nm ? ' · ' + p.nm : ''));
+      ctx.font = '700 ' + (10.5 * u) + 'px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const tw = ctx.measureText(lbl).width + 14 * u;
+      ctx.fillStyle = 'rgba(9,11,9,0.95)'; ctx.fillRect(-tw / 2, -32 * u, tw, 16 * u);
+      ctx.strokeStyle = p.col; ctx.lineWidth = 1.1 * u; ctx.strokeRect(-tw / 2, -32 * u, tw, 16 * u);
+      ctx.fillStyle = p.col; ctx.fillText(lbl, 0, -24 * u);
+      ctx.restore();
+      ctx.restore();
+    });
+  });
+
+  const SVG_MAP = {
+    std: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>',
+    eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+    sword: '<svg viewBox="0 0 24 24"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/></svg>',
+    shield: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    move: '<svg viewBox="0 0 24 24"><path d="M5 19L19 5M10 5h9v9"/></svg>',
+    tic: '<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    grid: '<svg viewBox="0 0 24 24"><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>',
+    mgrs: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    ctr: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/></svg>',
+    north: '<svg viewBox="0 0 24 24"><path d="M12 2l4 10-4-2-4 2z"/><path d="M12 12v10"/></svg>',
+    del: '<svg viewBox="0 0 24 24"><path d="M3 6h18M19 6v14H5V6M9 6V4h6v2"/></svg>',
+    list: '<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>'
+  };
+
+  const pingBar = document.createElement('div');
+  pingBar.id = 'atak-pingbar';
+  const PING_MODES = [
+    { id: 'std', title: 'Standard Ping', html: SVG_MAP.std },
+    { id: 'obs', title: 'Observe', html: SVG_MAP.eye },
+    { id: 'atk', title: 'Attack', html: SVG_MAP.sword },
+    { id: 'def', title: 'Defend', html: SVG_MAP.shield },
+    { id: 'mov', title: 'Move', html: SVG_MAP.move },
+    { id: 'tic', title: 'TIC', html: SVG_MAP.tic }
+  ];
+  function syncPingBar() {
+    pingBar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.p === activeSubPing));
+    pingBar.classList.toggle('open', typeof tool !== 'undefined' && tool === 'ping');
+  }
+  PING_MODES.forEach(pm => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.dataset.p = pm.id; b.title = pm.title; b.innerHTML = pm.html;
+    if (pm.id === 'tic') b.className = 'tic';
+    b.onclick = () => { activeSubPing = pm.id; syncPingBar(); };
+    pingBar.appendChild(b);
+  });
+  if (stage) {
+    stage.appendChild(pingBar);
+    pingBar.addEventListener('pointerdown', e => e.stopPropagation());
+  }
+  if (typeof setTool === 'function' && !setTool._atakPingBar) {
+    const origSetTool = setTool;
+    setTool = function (t) { origSetTool(t); syncPingBar(); };
+    setTool._atakPingBar = true;
+  }
+
+  function getRadialSpec() {
+    const it = hitItemRC, w = lastWorldRC;
+    const panChildren = it ? [
+      { title: 'MGRS', html: SVG_MAP.mgrs, fn: () => {
+        if (typeof grid !== 'undefined' && grid && w) {
+          const c8 = fmt8(toGrid(w)); navigator.clipboard?.writeText(c8).catch(() => {}); toast('MGRS COPIED: ' + c8);
+        } else toast('Calibrate grid first');
+      }},
+      { title: 'SELECT', html: document.getElementById('b-pan')?.innerHTML || 'SEL', fn: () => { setTool('pan'); sel = it; multi = []; draw(); } },
+      { title: 'DEL', html: SVG_MAP.del, fn: () => {
+        if (lockedOut() || it.k === 'map') return;
+        const idx = items.indexOf(it);
+        if (idx > -1) { hist.push({ t: 'del', it, i: idx }); items.splice(idx, 1); pushDel([it.id]); save(); draw(); }
+      }}
+    ] : [
+      { title: 'CENTER', html: SVG_MAP.ctr, fn: () => recenter() },
+      { title: 'NORTH', html: SVG_MAP.north, fn: () => setRot(0) },
+      { title: 'GRID', html: SVG_MAP.grid, fn: () => window.toggleMgrsGrid ? window.toggleMgrsGrid() : null },
+      { title: 'TAGS', html: '<b>#</b>', fn: () => toggleNums() }
+    ];
+
+    return [
+      { id: 'b-sym', short: 'SYM', title: 'MILSPEC Symbols' },
+      { id: 'b-wp', short: 'WP', title: 'Waypoints & Tags', children: [
+        { title: 'WP', html: document.getElementById('b-wp')?.innerHTML || 'WP', fn: () => setTool('wp') },
+        { title: 'NUM', html: document.getElementById('b-num')?.innerHTML || '#', fn: () => setTool('num') },
+        { title: 'LIST', html: SVG_MAP.list, fn: () => openSide('wp') }
+      ]},
+      { id: 'b-meas', short: 'MEAS', title: 'Compass / Measure' },
+      { id: 'b-ping', short: 'PING', title: 'Ping / Sub-Pings', children: [
+        { title: 'OBS', html: SVG_MAP.eye, fn: () => { activeSubPing = 'obs'; setTool('ping'); toast('PING: OBSERVE'); } },
+        { title: 'ATK', html: SVG_MAP.sword, fn: () => { activeSubPing = 'atk'; setTool('ping'); toast('PING: ATTACK'); } },
+        { title: 'DEF', html: SVG_MAP.shield, fn: () => { activeSubPing = 'def'; setTool('ping'); toast('PING: DEFEND'); } },
+        { title: 'MOV', html: SVG_MAP.move, fn: () => { activeSubPing = 'mov'; setTool('ping'); toast('PING: MOVE'); } },
+        { title: 'TIC', html: SVG_MAP.tic, cls: 'tic', fn: () => { activeSubPing = 'tic'; setTool('ping'); toast('PING: TIC'); } }
+      ]},
+      { id: 'b-draw', short: 'DRAW', title: 'Draw & Text', children: [
+        { title: 'PEN', html: document.getElementById('b-pen')?.innerHTML || 'PEN', fn: () => setTool('pen') },
+        { title: 'TEXT', html: document.getElementById('b-text')?.innerHTML || 'T', fn: () => setTool('text') },
+        { title: 'HL', html: document.getElementById('b-hl')?.innerHTML || 'HL', fn: () => setTool('hl') },
+        { title: 'CONN', html: document.getElementById('b-conn')?.innerHTML || 'CONN', fn: () => setTool('conn') },
+        { title: 'SHAPE', html: document.getElementById('b-shape')?.innerHTML || 'SHP', fn: () => setTool('shape') },
+        { title: 'NOTE', html: document.getElementById('b-note')?.innerHTML || 'NOTE', fn: () => setTool('note') },
+        { title: 'FIRE', html: document.getElementById('b-fire')?.innerHTML || 'FIRE', fn: () => setTool('fire') }
+      ]},
+      { id: 'b-eraser', short: 'ERASE', title: 'Eraser' },
+      { id: 'b-pan', short: it ? 'OBJ' : 'VIEW', title: it ? 'Item Actions' : 'Move / View', children: panChildren }
+    ];
+  }
+
+  function arcPath(rIn, rOut, a0, a1) {
+    const x0 = rOut * Math.cos(a0), y0 = rOut * Math.sin(a0);
+    const x1 = rOut * Math.cos(a1), y1 = rOut * Math.sin(a1);
+    const x2 = rIn  * Math.cos(a1), y2 = rIn  * Math.sin(a1);
+    const x3 = rIn  * Math.cos(a0), y3 = rIn  * Math.sin(a0);
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    return 'M' + x0.toFixed(1) + ',' + y0.toFixed(1) +
+      ' A' + rOut + ',' + rOut + ' 0 ' + large + ' 1 ' + x1.toFixed(1) + ',' + y1.toFixed(1) +
+      ' L' + x2.toFixed(1) + ',' + y2.toFixed(1) +
+      ' A' + rIn + ',' + rIn + ' 0 ' + large + ' 0 ' + x3.toFixed(1) + ',' + y3.toFixed(1) + ' Z';
+  }
+
+  const NS = 'http://www.w3.org/2000/svg';
+  function makeWedge(rIn, rOut, a0, a1, iconHtml, labelTxt, cls, hasArr) {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'atak-wedge' + (cls ? ' ' + cls : ''));
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('class', 'w-bg');
+    p.setAttribute('d', arcPath(rIn, rOut, a0, a1));
+    g.appendChild(p);
+
+    const aMid = (a0 + a1) / 2, rMid = (rIn + rOut) / 2;
+    const cx = rMid * Math.cos(aMid), cy = rMid * Math.sin(aMid);
+    const fo = document.createElementNS(NS, 'foreignObject');
+    fo.setAttribute('class', 'w-fo');
+    fo.setAttribute('x', (cx - 24).toFixed(1));
+    fo.setAttribute('y', (cy - 18).toFixed(1));
+    fo.setAttribute('width', '48');
+    fo.setAttribute('height', '36');
+    fo.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" class="w-cell">' + iconHtml + (labelTxt ? '<span>' + labelTxt + '</span>' : '') + '</div>';
+    g.appendChild(fo);
+
+    if (hasArr) {
+      const rArr = rOut - 7;
+      const ax = rArr * Math.cos(aMid), ay = rArr * Math.sin(aMid);
+      const deg = (aMid * 180 / Math.PI).toFixed(1);
+      const tri = document.createElementNS(NS, 'polygon');
+      tri.setAttribute('class', 'w-arr');
+      tri.setAttribute('points', '4,0 -3,-3.5 -3,3.5');
+      tri.setAttribute('transform', 'translate(' + ax.toFixed(1) + ',' + ay.toFixed(1) + ') rotate(' + deg + ')');
+      g.appendChild(tri);
+    }
+    return g;
+  }
+
+  function renderSubRing(subLayer, children, parentAngle) {
+    subLayer.innerHTML = '';
+    if (!children || !children.length) return;
+    const step = Math.min(0.46, (Math.PI * 1.15) / children.length);
+    const gap = 0.025;
+    const total = children.length * step;
+    const startA = parentAngle - total / 2;
+    children.forEach((ch, idx) => {
+      const a0 = startA + idx * step + gap / 2;
+      const a1 = startA + (idx + 1) * step - gap / 2;
+      const w = makeWedge(110, 178, a0, a1, ch.html || '', ch.title || '', 'outer' + (ch.cls ? ' ' + ch.cls : ''), false);
+      w.onclick = function (ev) {
+        ev.stopPropagation();
+        radial.classList.remove('open');
+        subLayer.innerHTML = '';
+        ch.fn();
+      };
+      subLayer.appendChild(w);
+    });
+  }
+
+  stage.addEventListener('pointerdown', e => { if (e.button === 2) rDownPt = { x: e.clientX, y: e.clientY }; });
+  stage.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+    if (!rDownPt) return;
+    const moved = Math.hypot(e.clientX - rDownPt.x, e.clientY - rDownPt.y); rDownPt = null;
+    if (moved > 6) return;
+    clearTimeout(hoverTimer); activeSubHost = null;
+    lastWorldRC = world(e);
+    const idx = topHit(lastWorldRC, 14 / v.s);
+    hitItemRC = idx >= 0 ? items[idx] : null;
+
+    radial.innerHTML = '';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'atak-wheel');
+    svg.setAttribute('viewBox', '-190 -190 380 380');
+    const subLayer = document.createElementNS(NS, 'g');
+    const mainLayer = document.createElementNS(NS, 'g');
+
+    const specs = getRadialSpec();
+    const step = (Math.PI * 2) / specs.length;
+    const gap = 0.035;
+
+    specs.forEach((sp, i) => {
+      const origBtn = document.getElementById(sp.id); if (!origBtn) return;
+      const aMid = i * step - Math.PI / 2;
+      const a0 = aMid - step / 2 + gap / 2;
+      const a1 = aMid + step / 2 - gap / 2;
+      const wedge = makeWedge(38, 104, a0, a1, origBtn.innerHTML, sp.short || '', '', !!sp.children);
+      wedge.onclick = ev => {
+        ev.stopPropagation();
+        if (sp.id === 'b-ping') { activeSubPing = 'std'; syncPingBar(); }
+        origBtn.click();
+        radial.classList.remove('open');
+      };
+      wedge.addEventListener('mouseenter', () => {
+        clearTimeout(hoverTimer);
+        if (!sp.children) {
+          if (activeSubHost) { activeSubHost.classList.remove('sub-open'); activeSubHost = null; }
+          renderSubRing(subLayer, [], 0);
+          return;
+        }
+        hoverTimer = setTimeout(() => {
+          if (activeSubHost) activeSubHost.classList.remove('sub-open');
+          activeSubHost = wedge;
+          wedge.classList.add('sub-open');
+          renderSubRing(subLayer, sp.children, aMid);
+        }, 200);
+      });
+      mainLayer.appendChild(wedge);
+    });
+
+    const hub = document.createElementNS(NS, 'circle');
+    hub.setAttribute('class', 'atak-hub-bg');
+    hub.setAttribute('r', '32');
+    const hubTxt = document.createElementNS(NS, 'text');
+    hubTxt.setAttribute('class', 'atak-hub-txt');
+    hubTxt.textContent = 'ATAK';
+
+    svg.append(subLayer, mainLayer, hub, hubTxt);
+    radial.appendChild(svg);
+    radial.style.left = e.clientX + 'px'; radial.style.top = e.clientY + 'px'; radial.classList.add('open');
+  });
+
+  document.addEventListener('pointerdown', e => {
+    if (e.button === 0 && !radial.contains(e.target)) { clearTimeout(hoverTimer); radial.classList.remove('open'); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { clearTimeout(hoverTimer); radial.classList.remove('open'); }
+  });
 })();
 </script>
 </body>
